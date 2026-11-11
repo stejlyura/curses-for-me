@@ -1,18 +1,33 @@
 {
+  "id": "/?source=pwa",
   "name": "Marketolog Academy",
   "short_name": "Marketolog",
   "description": "Мультикурсовая академия системного маркетинга, Growth, Media Buying, Affiliate Management и B2B Lead Gen.",
-  "start_url": "/",
+  "lang": "ru",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#09090b",
   "theme_color": "#4f46e5",
   "orientation": "portrait-primary",
   "categories": ["education", "business", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
     {
       "src": "/favicon-32x32.png",
       "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-48x48.png",
+      "sizes": "48x48",
       "type": "image/png"
     },
     {
@@ -49,6 +64,76 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Senior Marketing & Growth",
+      "short_name": "Growth Lead",
+      "description": "Юнит-экономика, MMM, когорты и подготовка к собеседованию",
+      "url": "/courses/senior-marketing/",
+      "icons": [
+        {
+          "src": "/favicon-48x48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Media Buying & PPC",
+      "short_name": "PPC Lead",
+      "description": "Meta CAPI, Google Ads, TikTok и аукционы трафика",
+      "url": "/courses/media-buying/",
+      "icons": [
+        {
+          "src": "/favicon-48x48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Affiliate Manager",
+      "short_name": "Affiliate",
+      "description": "CPA сети, трекинг Keitaro, антифрод и P&L офферов",
+      "url": "/courses/affiliate-manager/",
+      "icons": [
+        {
+          "src": "/favicon-48x48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "SDR / Lead Generation",
+      "short_name": "Outbound Lead",
+      "description": "Apollo, Clay, холодный аутрич и квалификация MEDDPIC",
+      "url": "/courses/lead-generation/",
+      "icons": [
+        {
+          "src": "/favicon-48x48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-1280x720.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Marketolog Academy Desktop Platform"
+    },
+    {
+      "src": "/screenshots/mobile-750x1334.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Marketolog Academy Mobile Platform"
     }
   ]
 }

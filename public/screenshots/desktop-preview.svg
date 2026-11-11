@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09090b" />
+      <stop offset="100%" stop-color="#18181b" />
+    </linearGradient>
+    <linearGradient id="cardGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="cardGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="cardGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="100%" stop-color="#1c1917" />
+    </linearGradient>
+    <linearGradient id="cardGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#164e63" />
+      <stop offset="100%" stop-color="#083344" />
+    </linearGradient>
+    <linearGradient id="brand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="url(#bg)" />
+
+  <!-- Navigation Bar -->
+  <rect width="1280" height="64" fill="#09090b" opacity="0.9" />
+  <line x1="0" y1="64" x2="1280" y2="64" stroke="#27272a" stroke-width="1" />
+
+  <rect x="40" y="14" width="36" height="36" rx="10" fill="url(#brand)" />
+  <text x="86" y="34" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="bold" font-size="16">Marketolog Academy</text>
+  <text x="86" y="48" fill="#a1a1aa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Zero-Fluff Executive Curriculum</text>
+
+  <!-- Header Stat Badges -->
+  <rect x="860" y="18" width="160" height="28" rx="8" fill="#18181b" stroke="#27272a" />
+  <text x="872" y="36" fill="#a1a1aa" font-family="sans-serif" font-size="11">4 Курса • 21 Модуль</text>
+  <rect x="1035" y="18" width="140" height="28" rx="8" fill="#4f46e5" fill-opacity="0.15" stroke="#6366f1" stroke-opacity="0.3" />
+  <text x="1047" y="36" fill="#a5b4fc" font-family="sans-serif" font-weight="600" font-size="11">79 Уроков • PWA</text>
+
+  <!-- Hero Section -->
+  <rect x="40" y="88" width="1200" height="150" rx="24" fill="#18181b" stroke="#27272a" />
+  <text x="80" y="140" fill="#ffffff" font-family="sans-serif" font-weight="800" font-size="32">Практическая академия маркетинга и Growth</text>
+  <text x="80" y="175" fill="#a1a1aa" font-family="sans-serif" font-size="14">Подготовка к сеньорным позициям: юнит-экономика, когорты, медиабаинг, аффилиат-сети и B2B аутрич</text>
+  <text x="80" y="205" fill="#34d399" font-family="sans-serif" font-weight="600" font-size="13">⚡ 100% Offline Ready • Без воды • Интерактивные симуляторы</text>
+
+  <!-- 4 Course Cards Grid -->
+  <!-- Card 1 -->
+  <rect x="40" y="260" width="285" height="420" rx="20" fill="url(#cardGrad1)" stroke="#312e81" stroke-width="1.5" />
+  <text x="64" y="300" fill="#818cf8" font-family="sans-serif" font-weight="700" font-size="12">SENIOR &amp; HEAD OF GROWTH</text>
+  <text x="64" y="335" fill="#ffffff" font-family="sans-serif" font-weight="700" font-size="18">Senior Marketing</text>
+  <text x="64" y="375" fill="#94a3b8" font-family="sans-serif" font-size="12">LTV/CAC, Payback, MMM,</text>
+  <text x="64" y="395" fill="#94a3b8" font-family="sans-serif" font-size="12">Attribution, PLG &amp; Pricing</text>
+  <rect x="64" y="440" width="237" height="36" rx="10" fill="#312e81" fill-opacity="0.5" />
+  <text x="80" y="462" fill="#c7d2fe" font-family="monospace" font-size="12">ROAS &gt; 350% | CAC &lt; 90d</text>
+  <rect x="64" y="600" width="237" height="44" rx="12" fill="#4f46e5" />
+  <text x="120" y="627" fill="#ffffff" font-family="sans-serif" font-weight="600" font-size="13">Открыть курс →</text>
+
+  <!-- Card 2 -->
+  <rect x="345" y="260" width="285" height="420" rx="20" fill="url(#cardGrad2)" stroke="#065f46" stroke-width="1.5" />
+  <text x="369" y="300" fill="#34d399" font-family="sans-serif" font-weight="700" font-size="12">MEDIA BUYING &amp; PPC</text>
+  <text x="369" y="335" fill="#ffffff" font-family="sans-serif" font-weight="700" font-size="18">PPC Specialist</text>
+  <text x="369" y="375" fill="#94a3b8" font-family="sans-serif" font-size="12">Meta CAPI, Google PMax,</text>
+  <text x="369" y="395" fill="#94a3b8" font-family="sans-serif" font-size="12">TikTok UGC, Break-Even ROAS</text>
+  <rect x="369" y="440" width="237" height="36" rx="10" fill="#065f46" fill-opacity="0.5" />
+  <text x="385" y="462" fill="#a7f3d0" font-family="monospace" font-size="12">Target CPA | Adv+ Bidding</text>
+  <rect x="369" y="600" width="237" height="44" rx="12" fill="#059669" />
+  <text x="425" y="627" fill="#ffffff" font-family="sans-serif" font-weight="600" font-size="13">Открыть курс →</text>
+
+  <!-- Card 3 -->
+  <rect x="650" y="260" width="285" height="420" rx="20" fill="url(#cardGrad3)" stroke="#78350f" stroke-width="1.5" />
+  <text x="674" y="300" fill="#fbbf24" font-family="sans-serif" font-weight="700" font-size="12">AFFILIATE MARKETING</text>
+  <text x="674" y="335" fill="#ffffff" font-family="sans-serif" font-weight="700" font-size="18">Affiliate Manager</text>
+  <text x="674" y="375" fill="#94a3b8" font-family="sans-serif" font-size="12">CPA, RevShare, Keitaro S2S,</text>
+  <text x="674" y="395" fill="#94a3b8" font-family="sans-serif" font-size="12">Антифрод &amp; P&amp;L офферов</text>
+  <rect x="674" y="440" width="237" height="36" rx="10" fill="#78350f" fill-opacity="0.5" />
+  <text x="690" y="462" fill="#fde68a" font-family="monospace" font-size="12">Baseline CR | Scrubbing</text>
+  <rect x="674" y="600" width="237" height="44" rx="12" fill="#d97706" />
+  <text x="730" y="627" fill="#ffffff" font-family="sans-serif" font-weight="600" font-size="13">Открыть курс →</text>
+
+  <!-- Card 4 -->
+  <rect x="955" y="260" width="285" height="420" rx="20" fill="url(#cardGrad4)" stroke="#155e75" stroke-width="1.5" />
+  <text x="979" y="300" fill="#22d3ee" font-family="sans-serif" font-weight="700" font-size="12">OUTBOUND B2B PIPELINE</text>
+  <text x="979" y="335" fill="#ffffff" font-family="sans-serif" font-weight="700" font-size="18">SDR &amp; Lead Gen</text>
+  <text x="979" y="375" fill="#94a3b8" font-family="sans-serif" font-size="12">Clay, Apollo, Cold Email,</text>
+  <text x="979" y="395" fill="#94a3b8" font-family="sans-serif" font-size="12">MEDDPIC &amp; AE Handover</text>
+  <rect x="979" y="440" width="237" height="36" rx="10" fill="#155e75" fill-opacity="0.5" />
+  <text x="995" y="462" fill="#a5f3fc" font-family="monospace" font-size="12">Reply &gt; 15% | Show-up 85%</text>
+  <rect x="979" y="600" width="237" height="44" rx="12" fill="#0891b2" />
+  <text x="1035" y="627" fill="#ffffff" font-family="sans-serif" font-weight="600" font-size="13">Открыть курс →</text>
+</svg>

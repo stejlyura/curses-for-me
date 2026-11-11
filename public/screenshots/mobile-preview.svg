@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 1334" width="750" height="1334">
+  <defs>
+    <linearGradient id="m_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09090b" />
+      <stop offset="100%" stop-color="#18181b" />
+    </linearGradient>
+    <linearGradient id="m_brand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+    <linearGradient id="m_card1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="m_card2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+  </defs>
+
+  <rect width="750" height="1334" fill="url(#m_bg)" />
+
+  <!-- Mobile Header -->
+  <rect width="750" height="96" fill="#09090b" opacity="0.95" />
+  <line x1="0" y1="96" x2="750" y2="96" stroke="#27272a" stroke-width="2" />
+
+  <rect x="32" y="24" width="48" height="48" rx="14" fill="url(#m_brand)" />
+  <text x="96" y="52" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="22">Marketolog Academy</text>
+  <text x="96" y="74" fill="#a1a1aa" font-family="sans-serif" font-size="14">Multi-Course Executive Hub</text>
+
+  <!-- Mobile Hero -->
+  <rect x="32" y="128" width="686" height="240" rx="28" fill="#18181b" stroke="#27272a" stroke-width="2" />
+  <text x="64" y="190" fill="#ffffff" font-family="sans-serif" font-weight="800" font-size="34">Академия Маркетинга</text>
+  <text x="64" y="235" fill="#a1a1aa" font-family="sans-serif" font-size="18">4 практических курса с симуляторами:</text>
+  <text x="64" y="270" fill="#818cf8" font-family="sans-serif" font-weight="600" font-size="16">• Growth • PPC • Affiliates • Lead Gen</text>
+  <text x="64" y="325" fill="#34d399" font-family="sans-serif" font-weight="700" font-size="16">⚡ Работает 100% оффлайн в PWA</text>
+
+  <!-- Course Card 1 Mobile -->
+  <rect x="32" y="400" width="686" height="420" rx="28" fill="url(#m_card1)" stroke="#312e81" stroke-width="2" />
+  <text x="64" y="455" fill="#818cf8" font-family="sans-serif" font-weight="700" font-size="16">КУРС 1 • MIDDLE &amp; SENIOR</text>
+  <text x="64" y="505" fill="#ffffff" font-family="sans-serif" font-weight="800" font-size="30">Senior Marketing &amp; Growth</text>
+  <text x="64" y="555" fill="#94a3b8" font-family="sans-serif" font-size="17">Юнит-экономика LTV:CAC, когортная окупаемость,</text>
+  <text x="64" y="585" fill="#94a3b8" font-family="sans-serif" font-size="17">эконометрика MMM, Growth Loops и резюме XYZ.</text>
+  
+  <rect x="64" y="630" width="622" height="56" rx="16" fill="#312e81" fill-opacity="0.6" />
+  <text x="96" y="665" fill="#c7d2fe" font-family="monospace" font-size="16">6 Модулей • 34 Урока • Симулятор PnL</text>
+
+  <rect x="64" y="720" width="622" height="68" rx="20" fill="#4f46e5" />
+  <text x="270" y="762" fill="#ffffff" font-family="sans-serif" font-weight="700" font-size="20">Начать обучение →</text>
+
+  <!-- Course Card 2 Mobile -->
+  <rect x="32" y="850" width="686" height="420" rx="28" fill="url(#m_card2)" stroke="#065f46" stroke-width="2" />
+  <text x="64" y="905" fill="#34d399" font-family="sans-serif" font-weight="700" font-size="16">КУРС 2 • TRAFFIC &amp; PERFORMANCE</text>
+  <text x="64" y="955" fill="#ffffff" font-family="sans-serif" font-weight="800" font-size="30">Media Buying &amp; PPC Lead</text>
+  <text x="64" y="1005" fill="#94a3b8" font-family="sans-serif" font-size="17">Meta Ads CAPI, Google Ads Performance Max,</text>
+  <text x="64" y="1035" fill="#94a3b8" font-family="sans-serif" font-size="17">TikTok UGC креативы и Break-Even ROAS.</text>
+  
+  <rect x="64" y="1080" width="622" height="56" rx="16" fill="#065f46" fill-opacity="0.6" />
+  <text x="96" y="1115" fill="#a7f3d0" font-family="monospace" font-size="16">5 Модулей • 15 Уроков • Симулятор трафика</text>
+
+  <rect x="64" y="1170" width="622" height="68" rx="20" fill="#059669" />
+  <text x="270" y="1212" fill="#ffffff" font-family="sans-serif" font-weight="700" font-size="20">Начать обучение →</text>
+</svg>
