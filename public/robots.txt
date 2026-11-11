@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://marketolog-course.vercel.app/sitemap.xml
+
