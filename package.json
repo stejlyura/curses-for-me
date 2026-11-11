@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --noEmit",
+    "test": "npx tsx scripts/test-consistency.ts",
     "lint": "next lint"
   },
   "dependencies": {
