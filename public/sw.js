@@ -1,8 +1,17 @@
-const CACHE_NAME = 'marketolog-v1';
+const CACHE_NAME = 'marketolog-v2';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.webmanifest',
   '/icon.svg',
+  '/icon-maskable.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/icon-maskable-192.png',
+  '/icon-maskable-512.png',
+  '/apple-touch-icon.png',
+  '/favicon.ico',
+  '/favicon-32x32.png',
+  '/favicon-16x16.png',
 ];
 
 self.addEventListener('install', (event) => {
@@ -50,10 +59,11 @@ self.addEventListener('fetch', (event) => {
           if (event.request.mode === 'navigate') {
             return caches.match('/');
           }
+          return cachedResponse;
         });
 
+      // Stale-while-revalidate pattern
       return cachedResponse || fetchPromise;
     })
   );
 });
-
