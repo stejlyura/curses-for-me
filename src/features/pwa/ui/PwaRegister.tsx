@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { WifiOff, RefreshCw, X } from 'lucide-react';
 
 export const PwaRegister = (): React.JSX.Element | null => {
+  const [mounted, setMounted] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     // 1. Online / Offline network status listeners
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
@@ -69,6 +71,10 @@ export const PwaRegister = (): React.JSX.Element | null => {
       window.location.reload();
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <>

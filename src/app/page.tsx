@@ -74,6 +74,66 @@ export default function HomePage(): React.JSX.Element {
         </div>
       </section>
 
+      {/* 0-to-Senior Full Cycle Methodology Banner */}
+      <section className="rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/30 via-zinc-900/50 to-purple-950/20 p-6 sm:p-10 space-y-6 shadow-xl">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            Методология «От 0 до Senior»
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Обучение без пробелов: от понимания основ до сеньорной стратегии
+          </h2>
+          <p className="mt-2 text-sm text-zinc-300 leading-relaxed">
+            Вам больше не нужно бояться сложного сленга. В каждом уроке и курсе материал структурирован по трем последовательным ступеням:
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Step 1 */}
+          <div className="rounded-2xl border border-emerald-500/20 bg-zinc-950/70 p-5 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/30">
+                Шаг 1 • С нуля
+              </span>
+              <span className="text-xl">🔰</span>
+            </div>
+            <h3 className="text-base font-bold text-white">Как это устроено и зачем нужно</h3>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Объяснение на пальцах без заумного сленга, аналогии из жизни (на примере кофейни или магазина), пошаговые алгоритмы и словарь всех терминов.
+            </p>
+          </div>
+
+          {/* Step 2 */}
+          <div className="rounded-2xl border border-indigo-500/20 bg-zinc-950/70 p-5 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/30">
+                Шаг 2 • Middle
+              </span>
+              <span className="text-xl">⚙️</span>
+            </div>
+            <h3 className="text-base font-bold text-white">Прикладные симуляторы</h3>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Интерактивные калькуляторы юнит-экономики, A/B тестов, медиабаинга и P&L. Практика без риска слить реальный рекламный бюджет.
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div className="rounded-2xl border border-purple-500/20 bg-zinc-950/70 p-5 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/30">
+                Шаг 3 • Senior
+              </span>
+              <span className="text-xl">🚀</span>
+            </div>
+            <h3 className="text-base font-bold text-white">Эконометрика & Собеседования</h3>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Защита бюджета перед CFO, когортные модели, формулировки для резюме по Google XYZ и готовые ответы на каверзные вопросы C-Level.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Courses Catalog Grid (Core Requirement) */}
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -86,7 +146,7 @@ export default function HomePage(): React.JSX.Element {
               Выберите направление обучения
             </h2>
             <p className="text-sm text-zinc-400 mt-1">
-              Каждый курс автономен, содержит детальный силлабус, интерактивные симуляторы и проверочные тесты.
+              Каждый курс содержит материалы от базовых основ для новичка до продвинутых сеньорных симуляторов и кейсов.
             </p>
           </div>
         </div>

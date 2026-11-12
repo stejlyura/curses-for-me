@@ -12,10 +12,10 @@ interface CourseProgressWidgetProps {
 export const CourseProgressWidget = ({
   totalLessons,
   courseLessonSlugs,
-}: CourseProgressWidgetProps): React.JSX.Element => {
+}: CourseProgressWidgetProps): React.JSX.Element | null => {
   const { completedSlugs, isLoaded } = useProgress();
 
-  if (!isLoaded) return <></>;
+  if (!isLoaded) return null;
 
   const completedCount = courseLessonSlugs
     ? completedSlugs.filter((slug) => courseLessonSlugs.includes(slug)).length

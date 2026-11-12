@@ -88,8 +88,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }): React.JSX.Element {
   return (
-    <html lang="ru" className="dark">
-      <body className="min-h-screen bg-zinc-950 text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-brand-200">
+    <html lang="ru" className="dark" suppressHydrationWarning>
+      <body
+        className="min-h-screen bg-zinc-950 text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-brand-200"
+        suppressHydrationWarning
+      >
         <PwaRegister />
         <div className="flex min-h-screen flex-col">
           <Header />

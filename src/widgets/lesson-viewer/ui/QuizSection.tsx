@@ -8,11 +8,11 @@ interface QuizSectionProps {
   questions: QuizQuestion[];
 }
 
-export const QuizSection = ({ questions }: QuizSectionProps): React.JSX.Element => {
+export const QuizSection = ({ questions }: QuizSectionProps): React.JSX.Element | null => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
 
-  if (questions.length === 0) return <></>;
+  if (questions.length === 0) return null;
 
   const handleSelect = (questionId: string, optionIndex: number) => {
     if (submitted[questionId]) return;

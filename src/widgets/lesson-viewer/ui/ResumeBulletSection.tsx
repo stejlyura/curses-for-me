@@ -8,7 +8,7 @@ interface ResumeBulletSectionProps {
   bullets: ResumeBullet[];
 }
 
-export const ResumeBulletSection = ({ bullets }: ResumeBulletSectionProps): React.JSX.Element => {
+export const ResumeBulletSection = ({ bullets }: ResumeBulletSectionProps): React.JSX.Element | null => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const copyToClipboard = async (text: string, index: number) => {
@@ -21,7 +21,7 @@ export const ResumeBulletSection = ({ bullets }: ResumeBulletSectionProps): Reac
     }
   };
 
-  if (bullets.length === 0) return <></>;
+  if (bullets.length === 0) return null;
 
   return (
     <section className="my-10 rounded-2xl border border-emerald-900/40 bg-emerald-950/20 p-6 sm:p-8">

@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { Lesson } from '@/entities/lesson';
 import { useProgress } from '@/features/progress-tracker/model/useProgress';
+import { FoundationalSection } from './FoundationalSection';
 import { BenchmarkSection } from './BenchmarkSection';
 import { ResearchSection } from './ResearchSection';
 import { InterviewSection } from './InterviewSection';
@@ -16,6 +18,7 @@ import { AffiliatePnLSimulator } from '@/features/calculators/ui/AffiliatePnLSim
 import { OutboundPipelineSimulator } from '@/features/calculators/ui/OutboundPipelineSimulator';
 import { ResumeBulletGenerator } from '@/features/resume-builder/ui/ResumeBulletGenerator';
 import { getCourseBySlug } from '@/shared/lib/content-loader';
+import { getFoundationalExplainerForLesson } from '@/shared/lib/foundational-knowledge';
 import { 
   CheckCircle2, 
   Clock, 
@@ -23,7 +26,9 @@ import {
   ArrowRight, 
   Sparkles,
   BookOpen,
-  Sigma
+  Sigma,
+  GraduationCap,
+  SlidersHorizontal
 } from 'lucide-react';
 
 interface LessonViewerProps {
@@ -39,10 +44,13 @@ export const LessonViewer = ({
   prevLesson,
   nextLesson,
 }: LessonViewerProps): React.JSX.Element => {
+  const [learningMode, setLearningMode] = useState<'all' | 'foundation' | 'senior'>('all');
   const { isCompleted, toggleLesson } = useProgress();
   const completed = isCompleted(lesson.slug);
   const course = getCourseBySlug(courseSlug);
   const courseTitle = course ? course.title : 'Курс';
+  const foundationalExplainer = getFoundationalExplainerForLesson(lesson);
+
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -98,6 +106,59 @@ export const LessonViewer = ({
         </div>
       </header>
 
+      {/* Learning Mode Switcher (От 0 до Senior) */}
+      <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl border border-zinc-800 bg-zinc-900/60">
+        <div className="flex items-center gap-2 text-xs text-zinc-300">
+          <GraduationCap className="w-4 h-4 text-emerald-400" />
+          <span className="font-semibold text-white">Режим обучения:</span>
+          <span className="text-zinc-400 hidden md:inline">выберите подачу под свои цели</span>
+        </div>
+        <div className="flex items-center gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80 text-xs">
+          <button
+            type="button"
+            onClick={() => setLearningMode('all')}
+            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              learningMode === 'all'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            ⚡ От 0 до Senior (Полный)
+          </button>
+          <button
+            type="button"
+            onClick={() => setLearningMode('foundation')}
+            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              learningMode === 'foundation'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            🔰 С нуля (Понимание)
+          </button>
+          <button
+            type="button"
+            onClick={() => setLearningMode('senior')}
+            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              learningMode === 'senior'
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            🚀 Senior экспресс
+          </button>
+        </div>
+      </div>
+
+      {/* Step 1: Foundational Explainer (Shown in 'all' and 'foundation' modes) */}
+      {(learningMode === 'all' || learningMode === 'foundation') && (
+        <FoundationalSection
+          explainer={foundationalExplainer}
+          lessonTitle={lesson.title}
+          lessonNumber={lesson.lessonNumber}
+        />
+      )}
+
       {/* Core Concepts & Formulas */}
       {lesson.coreConcepts.length > 0 && (
         <section className="my-8 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6">
@@ -125,11 +186,15 @@ export const LessonViewer = ({
         </section>
       )}
 
-      {/* Benchmarks */}
-      <BenchmarkSection metrics={lesson.benchmarkMetrics} />
+      {/* Benchmarks (Shown in 'all' and 'senior' modes) */}
+      {learningMode !== 'foundation' && (
+        <BenchmarkSection metrics={lesson.benchmarkMetrics} />
+      )}
 
-      {/* Research Insights */}
-      <ResearchSection insights={lesson.researchInsights} />
+      {/* Research Insights (Shown in 'all' and 'senior' modes) */}
+      {learningMode !== 'foundation' && (
+        <ResearchSection insights={lesson.researchInsights} />
+      )}
 
       {/* Longread Deep Dive */}
       <section className="my-10">

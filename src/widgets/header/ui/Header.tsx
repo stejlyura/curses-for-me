@@ -19,7 +19,7 @@ export const Header = (): React.JSX.Element => {
               <span className="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
                 Marketolog <span className="text-xs px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">Academy</span>
               </span>
-              <span className="text-[11px] text-zinc-400">Multi-Course Executive Hub</span>
+              <span className="text-[11px] text-zinc-400">Траектория «От 0 до Senior»</span>
             </div>
           </Link>
 

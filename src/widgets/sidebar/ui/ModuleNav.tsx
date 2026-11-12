@@ -111,8 +111,8 @@ export const ModuleNav = ({
             onClick={() => setIsSwitcherOpen((prev) => !prev)}
             className="w-full flex items-center justify-between p-2.5 rounded-xl border border-zinc-800 bg-zinc-900/90 hover:bg-zinc-800/90 transition-all text-left group"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div
+            <span className="flex items-center gap-2.5 min-w-0">
+              <span
                 className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border"
                 style={{
                   backgroundColor: `${currentCourse.colorTheme.accent}15`,
@@ -121,12 +121,12 @@ export const ModuleNav = ({
                 }}
               >
                 <GraduationCap className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-xs font-bold text-white truncate">{currentCourse.title}</div>
-                <div className="text-[10px] text-zinc-400 truncate">{currentCourse.roleBadge}</div>
-              </div>
-            </div>
+              </span>
+              <span className="min-w-0 block">
+                <span className="text-xs font-bold text-white truncate block">{currentCourse.title}</span>
+                <span className="text-[10px] text-zinc-400 truncate block">{currentCourse.roleBadge}</span>
+              </span>
+            </span>
             <ChevronDown
               className={`w-4 h-4 text-zinc-400 group-hover:text-zinc-200 transition-transform ${
                 isSwitcherOpen ? 'rotate-180' : ''
@@ -197,19 +197,19 @@ export const ModuleNav = ({
                   onClick={() => handleToggleModule(module.id)}
                   className="w-full flex items-center justify-between p-3 text-left hover:bg-zinc-900/60 transition-colors"
                 >
-                  <div className="min-w-0 pr-2">
-                    <div className="flex items-center gap-1.5">
+                  <span className="min-w-0 pr-2 block">
+                    <span className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-zinc-200 truncate">
                         {module.title}
                       </span>
                       {isModuleCompleted && (
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       )}
-                    </div>
-                    <div className="text-[10px] text-zinc-400 mt-0.5">
+                    </span>
+                    <span className="text-[10px] text-zinc-400 mt-0.5 block">
                       {completedInModule} из {module.lessonSlugs.length} уроков
-                    </div>
-                  </div>
+                    </span>
+                  </span>
                   <ChevronRight
                     className={`w-3.5 h-3.5 text-zinc-400 shrink-0 transition-transform ${
                       isExpanded ? 'rotate-90 text-brand-400' : ''

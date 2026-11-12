@@ -5,8 +5,8 @@ interface BenchmarkSectionProps {
   metrics: BenchmarkMetric[];
 }
 
-export const BenchmarkSection = ({ metrics }: BenchmarkSectionProps): React.JSX.Element => {
-  if (metrics.length === 0) return <></>;
+export const BenchmarkSection = ({ metrics }: BenchmarkSectionProps): React.JSX.Element | null => {
+  if (metrics.length === 0) return null;
 
   return (
     <section className="my-8 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8">

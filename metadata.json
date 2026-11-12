@@ -1,0 +1,8 @@
+{
+  "name": "Marketolog Academy",
+  "description": "Практические курсы для Senior, PPC, Affiliates & Lead Gen",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

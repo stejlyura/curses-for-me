@@ -13,6 +13,7 @@ import { MediaBuyingSimulator } from '@/features/calculators/ui/MediaBuyingSimul
 import { AffiliatePnLSimulator } from '@/features/calculators/ui/AffiliatePnLSimulator';
 import { OutboundPipelineSimulator } from '@/features/calculators/ui/OutboundPipelineSimulator';
 import { ResumeBulletGenerator } from '@/features/resume-builder/ui/ResumeBulletGenerator';
+import { CourseRoadmapSection } from '@/features/roadmap/ui/CourseRoadmapSection';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -241,6 +242,14 @@ export default async function CourseDetailPage({ params }: PageProps): Promise<R
             </div>
           </div>
         </section>
+
+        {/* 0-to-Senior Interactive Trajectory & Knowledge Base */}
+        <CourseRoadmapSection
+          courseSlug={courseSlug}
+          courseTitle={course.title}
+          modules={modules}
+          lessons={lessons}
+        />
 
         {/* Syllabus / Modules Roadmap */}
         <section className="space-y-6">

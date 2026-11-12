@@ -71,8 +71,8 @@ export const CourseCard = ({ course, lessonSlugs = [] }: CourseCardProps): React
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-zinc-700 bg-zinc-800/80 text-zinc-300">
-              {course.level}
+            <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-950/40 text-emerald-300">
+              От 0 до {course.level}
             </span>
             <span
               className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border"

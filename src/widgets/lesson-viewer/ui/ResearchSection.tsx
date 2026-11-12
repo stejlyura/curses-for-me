@@ -5,8 +5,8 @@ interface ResearchSectionProps {
   insights: ResearchInsight[];
 }
 
-export const ResearchSection = ({ insights }: ResearchSectionProps): React.JSX.Element => {
-  if (insights.length === 0) return <></>;
+export const ResearchSection = ({ insights }: ResearchSectionProps): React.JSX.Element | null => {
+  if (insights.length === 0) return null;
 
   return (
     <section className="my-8 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8">

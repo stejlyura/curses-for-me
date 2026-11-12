@@ -5,8 +5,8 @@ interface CaseStudySectionProps {
   caseStudies: CompanyCaseStudy[];
 }
 
-export const CaseStudySection = ({ caseStudies }: CaseStudySectionProps): React.JSX.Element => {
-  if (caseStudies.length === 0) return <></>;
+export const CaseStudySection = ({ caseStudies }: CaseStudySectionProps): React.JSX.Element | null => {
+  if (caseStudies.length === 0) return null;
 
   return (
     <section className="my-10 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8">

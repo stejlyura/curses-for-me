@@ -9,12 +9,14 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export const PwaInstallButton = (): React.JSX.Element | null => {
+  const [mounted, setMounted] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIos, setIsIos] = useState(false);
   const [showIosModal, setShowIosModal] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window === 'undefined') return;
 
     // Detect if already installed / running in standalone window
@@ -70,6 +72,10 @@ export const PwaInstallButton = (): React.JSX.Element | null => {
       return;
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   if (isInstalled) {
     return (

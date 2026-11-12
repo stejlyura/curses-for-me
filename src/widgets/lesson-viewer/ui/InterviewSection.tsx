@@ -8,14 +8,14 @@ interface InterviewSectionProps {
   cases: InterviewCase[];
 }
 
-export const InterviewSection = ({ cases }: InterviewSectionProps): React.JSX.Element => {
+export const InterviewSection = ({ cases }: InterviewSectionProps): React.JSX.Element | null => {
   const [openCases, setOpenCases] = useState<Record<number, boolean>>({ 0: true });
 
   const toggleCase = (idx: number) => {
     setOpenCases((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-  if (cases.length === 0) return <></>;
+  if (cases.length === 0) return null;
 
   return (
     <section className="my-10 rounded-2xl border border-brand-900/40 bg-brand-950/20 p-6 sm:p-8">
@@ -47,7 +47,7 @@ export const InterviewSection = ({ cases }: InterviewSectionProps): React.JSX.El
                 onClick={() => toggleCase(idx)}
                 className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-800/40 transition-colors"
               >
-                <div className="flex items-center gap-3 pr-4">
+                <span className="flex items-center gap-3 pr-4">
                   <span
                     className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border ${
                       c.difficulty === 'Director'
@@ -62,10 +62,10 @@ export const InterviewSection = ({ cases }: InterviewSectionProps): React.JSX.El
                   <span className="text-sm font-semibold text-white">
                     {c.question}
                   </span>
-                </div>
-                <div className="shrink-0 text-zinc-400">
+                </span>
+                <span className="shrink-0 text-zinc-400">
                   {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </div>
+                </span>
               </button>
 
               {isOpen && (

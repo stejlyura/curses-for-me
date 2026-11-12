@@ -83,6 +83,15 @@ export const CoreConceptSchema = z.object({
   formulas: z.array(z.string()).optional(),
 });
 
+export const FoundationalExplainerSchema = z.object({
+  simpleExplanation: z.string(),
+  whyItMatters: z.string(),
+  realWorldAnalogy: z.string(),
+  stepByStepMechanics: z.array(z.string()),
+  glossary: z.array(z.object({ term: z.string(), definition: z.string() })),
+  mindsetShift: z.object({ juniorView: z.string(), seniorView: z.string() }),
+});
+
 export const LessonSchema = z.object({
   id: z.string(),
   slug: z.string(),
@@ -104,6 +113,7 @@ export const LessonSchema = z.object({
   formulasDetailed: z.array(InteractiveFormulaSchema).optional(),
   caseStudies: z.array(CompanyCaseStudySchema).optional(),
   quizQuestions: z.array(QuizQuestionSchema).optional(),
+  foundationalExplainer: FoundationalExplainerSchema.optional(),
   longreadMarkdown: z.string(),
 });
 
@@ -127,5 +137,6 @@ export type InteractiveFormula = z.infer<typeof InteractiveFormulaSchema>;
 export type CompanyCaseStudy = z.infer<typeof CompanyCaseStudySchema>;
 export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 export type CoreConcept = z.infer<typeof CoreConceptSchema>;
+export type FoundationalExplainer = z.infer<typeof FoundationalExplainerSchema>;
 export type Lesson = z.infer<typeof LessonSchema>;
 export type Module = z.infer<typeof ModuleSchema>;
