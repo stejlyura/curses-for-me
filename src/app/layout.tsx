@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { PwaRegister } from '@/features/pwa/ui/PwaRegister';
 import { Header } from '@/widgets/header/ui/Header';
+import { AuthSyncProvider, AuthModal } from '@/features/auth';
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin', 'cyrillic-ext'],
@@ -112,11 +113,14 @@ export default function RootLayout({
         className="min-h-screen bg-zinc-950 font-sans text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-brand-200"
         suppressHydrationWarning
       >
-        <PwaRegister />
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-        </div>
+        <AuthSyncProvider>
+          <PwaRegister />
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+          </div>
+          <AuthModal />
+        </AuthSyncProvider>
       </body>
     </html>
   );

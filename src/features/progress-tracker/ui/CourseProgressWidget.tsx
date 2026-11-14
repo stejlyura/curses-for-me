@@ -1,6 +1,7 @@
 'use client';
 
 import { useProgress } from '../model/useProgress';
+import { useOptionalAuthSync } from '@/features/auth';
 import { ProgressBar } from '@/shared/ui';
 
 interface CourseProgressWidgetProps {
@@ -13,6 +14,8 @@ export const CourseProgressWidget = ({
   courseLessonSlugs,
 }: CourseProgressWidgetProps): React.JSX.Element | null => {
   const { completedSlugs, isLoaded } = useProgress();
+  const auth = useOptionalAuthSync();
+  const isAuthenticated = auth?.isAuthenticated ?? false;
 
   if (!isLoaded) return null;
 
@@ -34,9 +37,11 @@ export const CourseProgressWidget = ({
       <ProgressBar value={percentage} />
 
       <p className="text-xs text-zinc-500">
-        {percentage === 100
+        {!isAuthenticated
+          ? 'Войдите, чтобы сохранять прогресс.'
+          : percentage === 100
           ? 'Курс полностью пройден.'
-          : 'Сохраняется локально в браузере.'}
+          : 'Прогресс синхронизируется между устройствами.'}
       </p>
     </div>
   );

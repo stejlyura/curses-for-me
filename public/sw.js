@@ -1,4 +1,4 @@
-const CACHE_NAME = 'marketolog-v5';
+const CACHE_NAME = 'marketolog-v6';
 
 const PRECACHE_ROUTES = [
   '/',
@@ -195,6 +195,7 @@ self.addEventListener('fetch', (event) => {
   if (!url.protocol.startsWith('http')) return;
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith('/_next/webpack-hmr')) return;
+  if (url.pathname.startsWith('/api/')) return;
 
   // 1. /_next/static/ bundles -> Network-First with Cache Fallback (prevents stale dev chunk mismatch while working 100% offline)
   if (url.pathname.startsWith('/_next/static/')) {

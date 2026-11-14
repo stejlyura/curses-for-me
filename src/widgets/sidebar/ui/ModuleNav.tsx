@@ -10,6 +10,12 @@ import {
   getCourseBySlug,
 } from '@/shared/lib/content-loader';
 import { useProgress, CourseProgressWidget } from '@/features/progress-tracker';
+import { useOptionalAuthSync } from '@/features/auth';
+import {
+  LEARNING_STATE_EVENT,
+  readActiveModuleForCourse,
+  writeActiveModuleForCourse,
+} from '@/features/progress-tracker/model/learning-store';
 import {
   CheckCircle2,
   ChevronRight,
@@ -28,6 +34,8 @@ export const ModuleNav = ({
 }: ModuleNavProps): React.JSX.Element => {
   const pathname = usePathname();
   const activeCourseSlug = currentCourseSlug ?? courseSlug ?? 'senior-marketing';
+  const auth = useOptionalAuthSync();
+  const isAuthenticated = auth?.isAuthenticated ?? false;
 
   const courses = getAllCourses();
   const currentCourse = getCourseBySlug(activeCourseSlug) ?? courses[0];
@@ -51,35 +59,30 @@ export const ModuleNav = ({
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(`marketolog_active_module_${activeCourseSlug}`);
-      if (stored !== null) {
-        const parsed = Number(stored);
-        if (!Number.isNaN(parsed) && modules.some((m) => m.id === parsed)) {
-          setExpandedModuleId(parsed);
+    const syncModule = () => {
+      if (isAuthenticated) {
+        const stored = readActiveModuleForCourse(activeCourseSlug);
+        if (stored !== null && modules.some((m) => m.id === stored)) {
+          setExpandedModuleId(stored);
           return;
         }
       }
-    } catch {
-      // ignore localStorage errors
-    }
 
-    if (currentModuleId !== undefined) {
-      setExpandedModuleId(currentModuleId);
-    }
-  }, [activeCourseSlug, currentModuleId, modules]);
+      if (currentModuleId !== undefined) {
+        setExpandedModuleId(currentModuleId);
+      }
+    };
+
+    syncModule();
+    window.addEventListener(LEARNING_STATE_EVENT, syncModule);
+    return () => window.removeEventListener(LEARNING_STATE_EVENT, syncModule);
+  }, [activeCourseSlug, currentModuleId, isAuthenticated, modules]);
 
   const handleToggleModule = (moduleId: number) => {
     setExpandedModuleId((prev) => {
       const nextId = prev === moduleId ? null : moduleId;
-      try {
-        if (nextId !== null) {
-          localStorage.setItem(`marketolog_active_module_${activeCourseSlug}`, String(nextId));
-        } else {
-          localStorage.removeItem(`marketolog_active_module_${activeCourseSlug}`);
-        }
-      } catch {
-        // ignore localStorage errors
+      if (isAuthenticated) {
+        writeActiveModuleForCourse(activeCourseSlug, nextId);
       }
       return nextId;
     });

@@ -1,39 +1,61 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-
-const STORAGE_KEY = 'marketolog_completed_lessons';
+import { useOptionalAuthSync } from '@/features/auth';
+import {
+  COMPLETED_LESSONS_STORAGE_KEY,
+  LEARNING_STATE_EVENT,
+  readCompletedSlugs,
+  toggleCompletedLessonInStore,
+} from './learning-store';
 
 export const useProgress = () => {
+  const auth = useOptionalAuthSync();
+  const isAuthenticated = auth?.isAuthenticated ?? false;
+  const openAuthModal = auth?.openAuthModal;
+
   const [completedSlugs, setCompletedSlugs] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setCompletedSlugs(JSON.parse(stored) as string[]);
+    const sync = () => {
+      if (!isAuthenticated) {
+        setCompletedSlugs([]);
+        setIsLoaded(true);
+        return;
       }
-    } catch (e) {
-      console.error('Failed to load course progress from localStorage', e);
-    } finally {
+      setCompletedSlugs(readCompletedSlugs());
       setIsLoaded(true);
-    }
-  }, []);
+    };
 
-  const toggleLesson = useCallback((slug: string) => {
-    setCompletedSlugs((prev) => {
-      const updated = prev.includes(slug)
-        ? prev.filter((s) => s !== slug)
-        : [...prev, slug];
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch (e) {
-        console.error('Failed to persist course progress', e);
+    sync();
+
+    const handleStorage = (e: StorageEvent) => {
+      if (!e.key || e.key === COMPLETED_LESSONS_STORAGE_KEY) {
+        sync();
       }
-      return updated;
-    });
-  }, []);
+    };
+
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener(LEARNING_STATE_EVENT, sync);
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener(LEARNING_STATE_EVENT, sync);
+    };
+  }, [isAuthenticated]);
+
+  const toggleLesson = useCallback(
+    (slug: string) => {
+      if (!isAuthenticated) {
+        openAuthModal?.();
+        return;
+      }
+      const updated = toggleCompletedLessonInStore(slug);
+      setCompletedSlugs(updated);
+    },
+    [isAuthenticated, openAuthModal]
+  );
 
   const isCompleted = useCallback(
     (slug: string): boolean => completedSlugs.includes(slug),
@@ -47,4 +69,3 @@ export const useProgress = () => {
     isCompleted,
   };
 };
-

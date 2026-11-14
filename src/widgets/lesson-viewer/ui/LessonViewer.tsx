@@ -183,7 +183,11 @@ export const LessonViewer = ({
       <CaseStudySection caseStudies={lesson.caseStudies || []} />
 
       {/* Quiz */}
-      <QuizSection questions={lesson.quizQuestions || []} />
+      <QuizSection
+        questions={lesson.quizQuestions || []}
+        lessonSlug={lesson.slug}
+        courseSlug={courseSlug}
+      />
 
       {/* Contextual Interactive Simulators */}
       {(lesson.slug.startsWith('1-1-') || lesson.slug.startsWith('1-2-') || lesson.slug.startsWith('1-3-')) && (

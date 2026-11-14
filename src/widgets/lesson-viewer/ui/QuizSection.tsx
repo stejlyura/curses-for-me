@@ -2,26 +2,34 @@
 
 import { useState } from 'react';
 import { QuizQuestion } from '@/entities/lesson';
+import { useQuizProgress } from '@/features/progress-tracker/model/useQuizProgress';
 import { CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
 
 interface QuizSectionProps {
   questions: QuizQuestion[];
+  lessonSlug?: string;
+  courseSlug?: string;
 }
 
-export const QuizSection = ({ questions }: QuizSectionProps): React.JSX.Element | null => {
+export const QuizSection = ({
+  questions,
+  lessonSlug = 'standalone',
+  courseSlug = 'senior-marketing',
+}: QuizSectionProps): React.JSX.Element | null => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
-  const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
+  const { getAttempt, submitAnswer, resetAnswer } = useQuizProgress(lessonSlug, courseSlug);
 
   if (questions.length === 0) return null;
 
   const handleSelect = (questionId: string, optionIndex: number) => {
-    if (submitted[questionId]) return;
+    if (getAttempt(questionId)) return;
     setSelectedAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
   };
 
-  const handleCheck = (questionId: string) => {
-    if (selectedAnswers[questionId] === undefined) return;
-    setSubmitted((prev) => ({ ...prev, [questionId]: true }));
+  const handleCheck = (q: QuizQuestion) => {
+    const selectedOption = selectedAnswers[q.id];
+    if (selectedOption === undefined) return;
+    submitAnswer(q.id, selectedOption, selectedOption === q.correctOptionIndex);
   };
 
   const handleReset = (questionId: string) => {
@@ -30,11 +38,7 @@ export const QuizSection = ({ questions }: QuizSectionProps): React.JSX.Element 
       delete copy[questionId];
       return copy;
     });
-    setSubmitted((prev) => {
-      const copy = { ...prev };
-      delete copy[questionId];
-      return copy;
-    });
+    resetAnswer(questionId);
   };
 
   return (
@@ -50,9 +54,14 @@ export const QuizSection = ({ questions }: QuizSectionProps): React.JSX.Element 
 
       <div className="space-y-5">
         {questions.map((q, idx) => {
-          const selectedOption = selectedAnswers[q.id];
-          const isSubmitted = submitted[q.id];
-          const isCorrect = selectedOption === q.correctOptionIndex;
+          const savedAttempt = getAttempt(q.id);
+          const isSubmitted = Boolean(savedAttempt);
+          const selectedOption = savedAttempt
+            ? savedAttempt.selectedOptionIndex
+            : selectedAnswers[q.id];
+          const isCorrect = savedAttempt
+            ? savedAttempt.isCorrect
+            : selectedOption === q.correctOptionIndex;
 
           return (
             <div
@@ -112,7 +121,7 @@ export const QuizSection = ({ questions }: QuizSectionProps): React.JSX.Element 
                   <button
                     type="button"
                     disabled={selectedOption === undefined}
-                    onClick={() => handleCheck(q.id)}
+                    onClick={() => handleCheck(q)}
                     className="px-4 py-2.5 text-sm font-semibold rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     Проверить ответ

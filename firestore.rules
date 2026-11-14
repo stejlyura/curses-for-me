@@ -1,0 +1,118 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() == 64 && id.matches('^[a-f0-9]{64}$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isAuthorizedVaultKey(stateId) {
+      return isValidId(stateId) &&
+        hashing.sha256(stateId.toUtf8()).toHexString().lower() == '6509fac34c16c889c5b0e1f4d80b6e326c3990dc6e2b0a4660655c56ff9bb70b';
+    }
+
+    function hasAllowedLearningStateKeys(data) {
+      return data.keys().hasAll([
+          'owner',
+          'activeCourseSlug',
+          'activeLessonSlug',
+          'activeCourseUpdatedAt',
+          'learningMode',
+          'completedSlugs',
+          'completedAtBySlug',
+          'lastViewedAtBySlug',
+          'quizAttempts',
+          'activeModulesByCourse',
+          'clientUpdatedAt',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'owner',
+          'activeCourseSlug',
+          'activeLessonSlug',
+          'activeCourseUpdatedAt',
+          'learningMode',
+          'completedSlugs',
+          'completedAtBySlug',
+          'lastViewedAtBySlug',
+          'quizAttempts',
+          'activeModulesByCourse',
+          'clientUpdatedAt',
+          'createdAt',
+          'updatedAt'
+        ]);
+    }
+
+    function isValidLearningState(data) {
+      return hasAllowedLearningStateKeys(data) &&
+        data.owner is string &&
+        data.owner.size() >= 1 &&
+        data.owner.size() <= 64 &&
+        data.activeCourseSlug is string &&
+        data.activeCourseSlug.size() <= 100 &&
+        data.activeLessonSlug is string &&
+        data.activeLessonSlug.size() <= 150 &&
+        data.activeCourseUpdatedAt is number &&
+        data.activeCourseUpdatedAt >= 0 &&
+        data.learningMode in ['all', 'foundation', 'senior'] &&
+        data.completedSlugs is list &&
+        data.completedSlugs.size() <= 500 &&
+        (data.completedSlugs.size() == 0 || data.completedSlugs[0] is string) &&
+        data.completedAtBySlug is map &&
+        data.completedAtBySlug.size() <= 500 &&
+        data.lastViewedAtBySlug is map &&
+        data.lastViewedAtBySlug.size() <= 500 &&
+        data.quizAttempts is map &&
+        data.quizAttempts.size() <= 500 &&
+        data.activeModulesByCourse is map &&
+        data.activeModulesByCourse.size() <= 20 &&
+        data.clientUpdatedAt is number &&
+        data.clientUpdatedAt >= 0 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    match /learning_states/{stateId} {
+      allow list: if false;
+      allow delete: if false;
+
+      allow get: if isAuthorizedVaultKey(stateId);
+
+      allow create: if isAuthorizedVaultKey(stateId) &&
+        isValidLearningState(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAuthorizedVaultKey(stateId) &&
+        isValidLearningState(incoming()) &&
+        incoming().owner == existing().owner &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'activeCourseSlug',
+          'activeLessonSlug',
+          'activeCourseUpdatedAt',
+          'learningMode',
+          'completedSlugs',
+          'completedAtBySlug',
+          'lastViewedAtBySlug',
+          'quizAttempts',
+          'activeModulesByCourse',
+          'clientUpdatedAt',
+          'updatedAt'
+        ]);
+    }
+  }
+}

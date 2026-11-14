@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "LearningState": {
+      "title": "LearningState",
+      "description": "Synchronized learning state for an authenticated Marketolog Academy account (active course, lesson, completed slugs, learning mode, quiz attempts, and active module tabs).",
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "description": "Account username identifier",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "activeCourseSlug": {
+          "type": "string",
+          "description": "Currently selected course slug or empty string when cleared",
+          "maxLength": 100
+        },
+        "activeLessonSlug": {
+          "type": "string",
+          "description": "Most recent lesson slug in the active course or empty string",
+          "maxLength": 150
+        },
+        "activeCourseUpdatedAt": {
+          "type": "number",
+          "description": "Unix ms timestamp when the active course selection was last updated"
+        },
+        "learningMode": {
+          "type": "string",
+          "description": "Lesson complexity view mode",
+          "enum": ["all", "foundation", "senior"]
+        },
+        "completedSlugs": {
+          "type": "array",
+          "description": "List of completed lesson slugs (max 500)"
+        },
+        "completedAtBySlug": {
+          "type": "object",
+          "description": "Map of lesson slug to completion unix ms timestamp"
+        },
+        "lastViewedAtBySlug": {
+          "type": "object",
+          "description": "Map of lesson slug to last viewed unix ms timestamp"
+        },
+        "quizAttempts": {
+          "type": "object",
+          "description": "Map of attemptKey to serialized quiz attempt fields"
+        },
+        "activeModulesByCourse": {
+          "type": "object",
+          "description": "Map of courseSlug to currently expanded module ID"
+        },
+        "clientUpdatedAt": {
+          "type": "number",
+          "description": "Unix ms timestamp from latest mutation for cross-device merge"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last update timestamp"
+        }
+      },
+      "required": [
+        "owner",
+        "activeCourseSlug",
+        "activeLessonSlug",
+        "activeCourseUpdatedAt",
+        "learningMode",
+        "completedSlugs",
+        "completedAtBySlug",
+        "lastViewedAtBySlug",
+        "quizAttempts",
+        "activeModulesByCourse",
+        "clientUpdatedAt",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/learning_states/{stateId}": {
+      "schema": {
+        "$ref": "#/entities/LearningState"
+      },
+      "description": "Protected server-vaulted learning progress state keyed by server-side cryptographic document ID"
+    }
+  }
+}
