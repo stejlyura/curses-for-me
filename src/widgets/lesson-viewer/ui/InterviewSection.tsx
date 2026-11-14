@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { InterviewCase } from '@/entities/lesson';
-import { HelpCircle, ChevronDown, ChevronUp, AlertCircle, CheckCircle, HelpCircle as QuestionIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface InterviewSectionProps {
   cases: InterviewCase[];
@@ -18,48 +18,35 @@ export const InterviewSection = ({ cases }: InterviewSectionProps): React.JSX.El
   if (cases.length === 0) return null;
 
   return (
-    <section className="my-10 rounded-2xl border border-brand-900/40 bg-brand-950/20 p-6 sm:p-8">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
-          <HelpCircle className="w-5 h-5" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            Тренажер собеседования (Senior Defense)
-          </h3>
-          <p className="text-xs text-zinc-400">
-            Вопросы с подвохом, антипаттерны ответов и высокоранговые ответы с точки зрения бизнеса.
-          </p>
-        </div>
+    <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+      <div>
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          Вопросы на собеседовании
+        </h2>
+        <p className="text-sm sm:text-base text-zinc-400 mt-1">
+          Разбор реальных вопросов, слабых ответов и сильной аргументации.
+        </p>
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="space-y-3">
         {cases.map((c, idx) => {
           const isOpen = !!openCases[idx];
 
           return (
             <div
               key={idx}
-              className="rounded-xl border border-zinc-800 bg-zinc-900/60 overflow-hidden transition-colors"
+              className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 overflow-hidden"
             >
               <button
                 type="button"
                 onClick={() => toggleCase(idx)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-800/40 transition-colors"
+                className="w-full flex items-center justify-between p-5 text-left hover:bg-zinc-900/50 transition-colors gap-4"
               >
-                <span className="flex items-center gap-3 pr-4">
-                  <span
-                    className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border ${
-                      c.difficulty === 'Director'
-                        ? 'bg-rose-950/60 border-rose-800 text-rose-300'
-                        : c.difficulty === 'Senior'
-                        ? 'bg-amber-950/60 border-amber-800 text-amber-300'
-                        : 'bg-blue-950/60 border-blue-800 text-blue-300'
-                    }`}
-                  >
-                    {c.difficulty}
+                <span className="space-y-1 block">
+                  <span className="text-sm font-mono text-zinc-500 block">
+                    Уровень: {c.difficulty}
                   </span>
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-base font-semibold text-white leading-snug block">
                     {c.question}
                   </span>
                 </span>
@@ -69,43 +56,42 @@ export const InterviewSection = ({ cases }: InterviewSectionProps): React.JSX.El
               </button>
 
               {isOpen && (
-                <div className="p-4 pt-0 border-t border-zinc-800/60 space-y-4 text-xs mt-3">
-                  <div className="bg-zinc-950/60 p-3 rounded-lg border border-zinc-800/40 text-zinc-300">
-                    <span className="font-semibold text-zinc-100 block mb-1">
-                      🎯 Что на самом деле проверяет нанимающий менеджер:
-                    </span>
-                    {c.whatInterviewerLooksFor}
+                <div className="px-5 pb-5 pt-4 border-t border-zinc-800/60 space-y-5 text-[15px] sm:text-base">
+                  <div className="space-y-1.5">
+                    <div className="text-sm font-medium text-zinc-400">
+                      Что проверяет интервьюер
+                    </div>
+                    <p className="text-[15px] sm:text-base text-zinc-300 leading-relaxed">
+                      {c.whatInterviewerLooksFor}
+                    </p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="rounded-lg border border-rose-900/50 bg-rose-950/20 p-3.5">
-                      <div className="flex items-center gap-1.5 font-bold text-rose-400 mb-2">
-                        <AlertCircle className="w-4 h-4 shrink-0" />
-                        Антипаттерн (Red Flag / Слабый ответ)
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-1.5">
+                      <div className="text-sm font-medium text-rose-400">
+                        Слабый ответ (Red Flag)
                       </div>
-                      <p className="text-zinc-300 leading-relaxed">
+                      <p className="text-[15px] sm:text-base text-zinc-400 leading-relaxed">
                         {c.antiPatternAnswer}
                       </p>
                     </div>
 
-                    <div className="rounded-lg border border-emerald-900/50 bg-emerald-950/20 p-3.5">
-                      <div className="flex items-center gap-1.5 font-bold text-emerald-400 mb-2">
-                        <CheckCircle className="w-4 h-4 shrink-0" />
-                        Senior Battle-Tested Answer (High Signal)
+                    <div className="space-y-1.5">
+                      <div className="text-sm font-medium text-emerald-400">
+                        Эталонный ответ (Senior)
                       </div>
-                      <p className="text-zinc-200 leading-relaxed font-medium">
+                      <p className="text-[15px] sm:text-base text-zinc-200 leading-relaxed">
                         {c.seniorBattleTestedAnswer}
                       </p>
                     </div>
                   </div>
 
                   {c.probingQuestions.length > 0 && (
-                    <div className="p-3 bg-zinc-900/80 rounded-lg border border-zinc-800">
-                      <span className="font-semibold text-zinc-300 flex items-center gap-1.5 mb-2">
-                        <QuestionIcon className="w-3.5 h-3.5 text-brand-400" />
-                        Как интервьюер будет копать вглубь:
-                      </span>
-                      <ul className="list-disc list-inside space-y-1 text-zinc-400">
+                    <div className="pt-3 border-t border-zinc-800/60 space-y-2">
+                      <div className="text-sm font-medium text-zinc-400">
+                        Дополнительные вопросы
+                      </div>
+                      <ul className="list-disc list-inside space-y-1.5 text-[15px] text-zinc-300 leading-relaxed">
                         {c.probingQuestions.map((q, qIdx) => (
                           <li key={qIdx}>{q}</li>
                         ))}

@@ -1,7 +1,22 @@
 import type { Metadata, Viewport } from 'next';
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { PwaRegister } from '@/features/pwa/ui/PwaRegister';
 import { Header } from '@/widgets/header/ui/Header';
+
+const jakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin', 'cyrillic-ext'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '600'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://marketolog-course.vercel.app'),
@@ -76,7 +91,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#4f46e5',
+  themeColor: '#09090b',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -88,9 +103,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }): React.JSX.Element {
   return (
-    <html lang="ru" className="dark" suppressHydrationWarning>
+    <html
+      lang="ru"
+      className={`dark ${jakartaSans.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <body
-        className="min-h-screen bg-zinc-950 text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-brand-200"
+        className="min-h-screen bg-zinc-950 font-sans text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-brand-200"
         suppressHydrationWarning
       >
         <PwaRegister />

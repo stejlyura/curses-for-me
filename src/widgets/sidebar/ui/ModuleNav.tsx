@@ -3,20 +3,18 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  getModulesByCourseSlug, 
-  getLessonsByCourseSlug, 
-  getAllCourses, 
-  getCourseBySlug 
+import {
+  getModulesByCourseSlug,
+  getLessonsByCourseSlug,
+  getAllCourses,
+  getCourseBySlug,
 } from '@/shared/lib/content-loader';
 import { useProgress, CourseProgressWidget } from '@/features/progress-tracker';
-import { 
-  CheckCircle2, 
-  ChevronRight, 
-  ChevronDown, 
-  Layers, 
+import {
+  CheckCircle2,
+  ChevronRight,
+  ChevronDown,
   ArrowLeft,
-  GraduationCap
 } from 'lucide-react';
 
 interface ModuleNavProps {
@@ -37,7 +35,6 @@ export const ModuleNav = ({
   const allLessons = getLessonsByCourseSlug(activeCourseSlug);
   const { isCompleted } = useProgress();
 
-  // Find module containing the currently open lesson
   const currentModuleId = modules.find((m) =>
     m.lessonSlugs.some(
       (slug) =>
@@ -53,7 +50,6 @@ export const ModuleNav = ({
   );
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
-  // Restore active module from localStorage on initial render
   useEffect(() => {
     try {
       const stored = localStorage.getItem(`marketolog_active_module_${activeCourseSlug}`);
@@ -90,56 +86,40 @@ export const ModuleNav = ({
   };
 
   return (
-    <aside className="w-full lg:w-80 shrink-0 border-r border-zinc-800 bg-zinc-950/70 p-4 lg:p-6 lg:h-[calc(100vh-4rem)] lg:sticky lg:top-16 lg:overflow-y-auto space-y-6">
-      {/* Course Switcher & Catalog Link */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Каталог курсов
-          </Link>
-          <span className="text-[11px] font-mono text-zinc-400">4 курса</span>
-        </div>
+    <aside className="w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r border-zinc-800/70 bg-zinc-950 p-5 lg:p-6 lg:h-[calc(100vh-4rem)] lg:sticky lg:top-16 lg:overflow-y-auto space-y-6">
+      {/* Course Switcher */}
+      <div className="space-y-4">
+        <Link
+          href={`/courses/${activeCourseSlug}/`}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          К обзору курса
+        </Link>
 
-        {/* Current Course Dropdown Trigger */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setIsSwitcherOpen((prev) => !prev)}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl border border-zinc-800 bg-zinc-900/90 hover:bg-zinc-800/90 transition-all text-left group"
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/50 hover:bg-zinc-900 transition-colors text-left"
           >
-            <span className="flex items-center gap-2.5 min-w-0">
-              <span
-                className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border"
-                style={{
-                  backgroundColor: `${currentCourse.colorTheme.accent}15`,
-                  borderColor: `${currentCourse.colorTheme.accent}30`,
-                  color: currentCourse.colorTheme.accent,
-                }}
-              >
-                <GraduationCap className="w-4 h-4" />
+            <span className="min-w-0 pr-2 block">
+              <span className="text-sm font-semibold text-white truncate block">
+                {currentCourse.title}
               </span>
-              <span className="min-w-0 block">
-                <span className="text-xs font-bold text-white truncate block">{currentCourse.title}</span>
-                <span className="text-[10px] text-zinc-400 truncate block">{currentCourse.roleBadge}</span>
+              <span className="text-xs text-zinc-400 truncate block">
+                {currentCourse.roleBadge}
               </span>
             </span>
             <ChevronDown
-              className={`w-4 h-4 text-zinc-400 group-hover:text-zinc-200 transition-transform ${
+              className={`w-4 h-4 text-zinc-400 shrink-0 transition-transform ${
                 isSwitcherOpen ? 'rotate-180' : ''
               }`}
             />
           </button>
 
-          {/* Dropdown Menu */}
           {isSwitcherOpen && (
-            <div className="absolute top-full left-0 right-0 mt-2 z-50 rounded-2xl border border-zinc-800 bg-zinc-900 p-1.5 shadow-2xl space-y-1">
-              <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                Переключить курс
-              </div>
+            <div className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-xl border border-zinc-800 bg-zinc-900 p-1.5 shadow-xl space-y-0.5">
               {courses.map((course) => {
                 const isSelected = course.slug === activeCourseSlug;
                 return (
@@ -147,17 +127,14 @@ export const ModuleNav = ({
                     key={course.slug}
                     href={`/courses/${course.slug}/`}
                     onClick={() => setIsSwitcherOpen(false)}
-                    className={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-colors ${
+                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
                       isSelected
-                        ? 'bg-zinc-800 text-white font-semibold'
-                        : 'text-zinc-300 hover:bg-zinc-800/60 hover:text-white'
+                        ? 'bg-zinc-800 text-white font-medium'
+                        : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
                     }`}
                   >
-                    <div className="truncate mr-2">
-                      <div>{course.title}</div>
-                      <div className="text-[10px] text-zinc-400">{course.level}</div>
-                    </div>
-                    {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-brand-400 shrink-0" />}
+                    <span className="truncate">{course.title}</span>
+                    {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
                   </Link>
                 );
               })}
@@ -165,7 +142,6 @@ export const ModuleNav = ({
           )}
         </div>
 
-        {/* Progress for this course */}
         <CourseProgressWidget
           totalLessons={allLessons.length}
           courseLessonSlugs={allLessons.map((l) => l.slug)}
@@ -173,53 +149,40 @@ export const ModuleNav = ({
       </div>
 
       {/* Modules & Lessons List */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-1.5 px-1 text-xs font-bold uppercase tracking-wider text-zinc-400">
-          <Layers className="w-3.5 h-3.5 text-brand-400" />
-          <span>Модули программы</span>
+      <nav className="space-y-1">
+        <div className="px-1 pb-2 text-xs font-medium text-zinc-500">
+          Содержание
         </div>
 
-        <div className="space-y-3">
+        <div className="divide-y divide-zinc-800/50">
           {modules.map((module) => {
             const isExpanded = expandedModuleId === module.id;
             const completedInModule = module.lessonSlugs.filter((slug) => isCompleted(slug)).length;
-            const isModuleCompleted =
-              module.lessonSlugs.length > 0 && completedInModule === module.lessonSlugs.length;
 
             return (
-              <div
-                key={module.id}
-                className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 overflow-hidden"
-              >
-                {/* Module Header / Toggle */}
+              <div key={module.id} className="py-2">
                 <button
                   type="button"
                   onClick={() => handleToggleModule(module.id)}
-                  className="w-full flex items-center justify-between p-3 text-left hover:bg-zinc-900/60 transition-colors"
+                  className="w-full flex items-center justify-between py-2 px-1 text-left group"
                 >
                   <span className="min-w-0 pr-2 block">
-                    <span className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-zinc-200 truncate">
-                        {module.title}
-                      </span>
-                      {isModuleCompleted && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      )}
+                    <span className="text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors block leading-snug">
+                      {module.title}
                     </span>
-                    <span className="text-[10px] text-zinc-400 mt-0.5 block">
-                      {completedInModule} из {module.lessonSlugs.length} уроков
+                    <span className="text-xs text-zinc-500 font-mono tabular-nums mt-0.5 block">
+                      {completedInModule}/{module.lessonSlugs.length}
                     </span>
                   </span>
                   <ChevronRight
-                    className={`w-3.5 h-3.5 text-zinc-400 shrink-0 transition-transform ${
-                      isExpanded ? 'rotate-90 text-brand-400' : ''
+                    className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform ${
+                      isExpanded ? 'rotate-90 text-zinc-300' : ''
                     }`}
                   />
                 </button>
 
-                {/* Lessons in Module */}
                 {isExpanded && (
-                  <div className="p-1.5 pt-0 space-y-1 border-t border-zinc-800/50">
+                  <div className="mt-1.5 space-y-0.5 pl-1">
                     {module.lessonSlugs.map((slug) => {
                       const lesson = allLessons.find((l) => l.slug === slug);
                       const isCurrent =
@@ -233,29 +196,24 @@ export const ModuleNav = ({
                         <Link
                           key={slug}
                           href={`/courses/${activeCourseSlug}/lessons/${slug}/`}
-                          className={`group flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-all ${
+                          className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-sm leading-snug transition-colors ${
                             isCurrent
-                              ? 'bg-brand-600 text-white font-semibold shadow-sm'
-                              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                              ? 'bg-zinc-900 text-white font-medium'
+                              : 'text-zinc-300 hover:text-white hover:bg-zinc-900/40'
                           }`}
                         >
-                          <div className="flex items-center gap-2 min-w-0 pr-1">
-                            <CheckCircle2
-                              className={`w-3.5 h-3.5 shrink-0 ${
-                                completed
-                                  ? isCurrent
-                                    ? 'text-white'
-                                    : 'text-emerald-400'
-                                  : isCurrent
-                                  ? 'text-brand-200'
-                                  : 'text-zinc-400'
-                              }`}
-                            />
-                            <span className="truncate">
-                              {lesson ? `${lesson.lessonNumber} ${lesson.title}` : slug}
-                            </span>
-                          </div>
-                          {isCurrent && <ChevronRight className="w-3.5 h-3.5 shrink-0" />}
+                          <CheckCircle2
+                            className={`w-4 h-4 shrink-0 ${
+                              completed
+                                ? 'text-emerald-400'
+                                : isCurrent
+                                ? 'text-brand-400'
+                                : 'text-zinc-600'
+                            }`}
+                          />
+                          <span className="line-clamp-2 lg:truncate">
+                            {lesson ? `${lesson.lessonNumber} ${lesson.title}` : slug}
+                          </span>
                         </Link>
                       );
                     })}
@@ -265,7 +223,7 @@ export const ModuleNav = ({
             );
           })}
         </div>
-      </div>
+      </nav>
     </aside>
   );
 };

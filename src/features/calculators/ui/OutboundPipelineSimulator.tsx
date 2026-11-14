@@ -1,32 +1,19 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { 
-  PhoneCall, 
-  Mail, 
-  Calendar, 
-  Target, 
-  TrendingUp, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Sparkles, 
-  DollarSign, 
-  Users, 
-  Cpu 
-} from 'lucide-react';
 
 interface OutboundState {
   domainsCount: number;
   inboxesPerDomain: number;
-  dailySendsPerInbox: number; // recommend 30-45
-  workingDays: number; // 22 days/month
-  deliverabilityRate: number; // %
-  replyRate: number; // %
-  positiveReplyRatio: number; // % of replies that want a call
-  showUpRate: number; // % of booked calls attended
-  sqlConversionRate: number; // % attended calls qualified to SQL
-  closeRate: number; // % SQL closed to won
-  acv: number; // Annual Contract Value $
+  dailySendsPerInbox: number;
+  workingDays: number;
+  deliverabilityRate: number;
+  replyRate: number;
+  positiveReplyRatio: number;
+  showUpRate: number;
+  sqlConversionRate: number;
+  closeRate: number;
+  acv: number;
 }
 
 const PRESETS: Record<string, OutboundState> = {
@@ -80,8 +67,7 @@ export const OutboundPipelineSimulator = (): React.JSX.Element => {
     const deliveredEmails = monthlyTotalSends * (params.deliverabilityRate / 100);
     const totalReplies = deliveredEmails * (params.replyRate / 100);
     const positiveReplies = totalReplies * (params.positiveReplyRatio / 100);
-    
-    // Each positive reply converts to a booked meeting (assuming 85% book rate from positive interest)
+
     const bookedMeetings = positiveReplies * 0.85;
     const attendedMeetings = bookedMeetings * (params.showUpRate / 100);
     const salesQualifiedLeads = attendedMeetings * (params.sqlConversionRate / 100);
@@ -89,8 +75,7 @@ export const OutboundPipelineSimulator = (): React.JSX.Element => {
     const pipelineGenerated = salesQualifiedLeads * params.acv;
     const monthlyArrClosed = closedWonDeals * params.acv;
 
-    // Infrastructure estimated monthly costs ($5/inbox Google/Outlook + $80 Smartlead/Instantly + $150 Clay/Apollo)
-    const infraCost = (totalInboxes * 6) + 95 + 180;
+    const infraCost = totalInboxes * 6 + 95 + 180;
     const costPerSql = salesQualifiedLeads > 0 ? infraCost / salesQualifiedLeads : 0;
     const roiMultiple = infraCost > 0 ? monthlyArrClosed / infraCost : 0;
 
@@ -113,277 +98,291 @@ export const OutboundPipelineSimulator = (): React.JSX.Element => {
   }, [params]);
 
   return (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-950/70 p-6 sm:p-8 shadow-2xl backdrop-blur-md">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-800">
+    <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-6 sm:p-8 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-zinc-800/70">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-semibold mb-2">
-            <PhoneCall className="w-3.5 h-3.5" />
-            Outbound Sales Pipeline & Capacity Engine
-          </div>
-          <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Симулятор B2B Outbound воронки и емкости пайплайна
-          </h3>
-          <p className="text-xs text-zinc-400 mt-1 max-w-2xl">
-            Сквозной расчет от доменов и почтовых ящиков до ответов, демо-встреч, квалифицированных лидов (SQL) и закрытой выручки (ARR).
+          <h4 className="text-base font-semibold text-white">
+            Симулятор B2B Outbound воронки
+          </h4>
+          <p className="text-xs text-zinc-400 mt-1">
+            Расчет от доменов и ящиков до ответов, демо-встреч, SQL и закрытой выручки.
           </p>
         </div>
 
-        {/* Preset Selector */}
-        <div className="flex items-center gap-1.5 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800 self-start sm:self-auto">
+        <div className="inline-flex items-center gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800 text-xs self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setParams(PRESETS.enterpriseSaaS)}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+            className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap ${
               params === PRESETS.enterpriseSaaS
-                ? 'bg-sky-600 text-white shadow-sm'
+                ? 'bg-zinc-100 text-zinc-950'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            Enterprise ($45k)
+            Enterprise
           </button>
           <button
             type="button"
             onClick={() => setParams(PRESETS.midMarketTech)}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+            className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap ${
               params === PRESETS.midMarketTech
-                ? 'bg-sky-600 text-white shadow-sm'
+                ? 'bg-zinc-100 text-zinc-950'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            Mid-Market ($18k)
+            Mid-Market
           </button>
           <button
             type="button"
             onClick={() => setParams(PRESETS.smbVelocity)}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+            className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap ${
               params === PRESETS.smbVelocity
-                ? 'bg-sky-600 text-white shadow-sm'
+                ? 'bg-zinc-100 text-zinc-950'
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            SMB ($6k)
+            SMB
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
-        {/* Left Inputs (5 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Inputs */}
         <div className="lg:col-span-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Вторичные домены-сателлиты</label>
+              <label htmlFor="out-domains" className="text-[11px] text-zinc-400 block">
+                Домены-сателлиты
+              </label>
               <input
+                id="out-domains"
                 type="number"
                 min="1"
                 max="50"
                 value={params.domainsCount}
                 onChange={(e) => setParams({ ...params, domainsCount: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Почтовых ящиков на домен</label>
+              <label htmlFor="out-inboxes" className="text-[11px] text-zinc-400 block">
+                Ящиков на домен
+              </label>
               <input
+                id="out-inboxes"
                 type="number"
                 min="1"
                 max="5"
                 value={params.inboxesPerDomain}
                 onChange={(e) => setParams({ ...params, inboxesPerDomain: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
-              <span className="text-zinc-300 font-medium">Лимит отправок в день на ящик (Safe: 30-45)</span>
-              <span className="font-mono text-sky-400">{params.dailySendsPerInbox} писем/день</span>
+              <label htmlFor="out-limit" className="text-zinc-300 font-medium">
+                Отправок в день на ящик
+              </label>
+              <span className="font-mono text-white tabular-nums">
+                {params.dailySendsPerInbox} / день
+              </span>
             </div>
             <input
+              id="out-limit"
               type="range"
               min="15"
               max="60"
               step="5"
               value={params.dailySendsPerInbox}
-              onChange={(e) => setParams({ ...params, dailySendsPerInbox: Number(e.target.value) })}
-              className="w-full accent-sky-500 h-1.5 bg-zinc-800 rounded-lg cursor-pointer"
+              onChange={(e) =>
+                setParams({ ...params, dailySendsPerInbox: Number(e.target.value) })
+              }
+              className="w-full accent-brand-500 h-1.5 bg-zinc-800 rounded-lg cursor-pointer"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Deliverability (Доставляемость, %)</label>
+              <label htmlFor="out-deliv" className="text-[11px] text-zinc-400 block">
+                Доставляемость (%)
+              </label>
               <input
+                id="out-deliv"
                 type="number"
                 step="1"
                 min="80"
                 max="99"
                 value={params.deliverabilityRate}
-                onChange={(e) => setParams({ ...params, deliverabilityRate: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                onChange={(e) =>
+                  setParams({ ...params, deliverabilityRate: Number(e.target.value) })
+                }
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Reply Rate (Конверсия в ответ, %)</label>
+              <label htmlFor="out-reply" className="text-[11px] text-zinc-400 block">
+                Reply Rate (%)
+              </label>
               <input
+                id="out-reply"
                 type="number"
                 step="0.5"
                 min="1"
                 max="25"
                 value={params.replyRate}
                 onChange={(e) => setParams({ ...params, replyRate: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Позитивные ответы (Positive %)</label>
+              <label htmlFor="out-pos" className="text-[11px] text-zinc-400 block">
+                Позитивные ответы (%)
+              </label>
               <input
+                id="out-pos"
                 type="number"
                 step="1"
                 min="10"
                 max="70"
                 value={params.positiveReplyRatio}
-                onChange={(e) => setParams({ ...params, positiveReplyRatio: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                onChange={(e) =>
+                  setParams({ ...params, positiveReplyRatio: Number(e.target.value) })
+                }
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Show-Up Rate (Явка на созвон, %)</label>
+              <label htmlFor="out-showup" className="text-[11px] text-zinc-400 block">
+                Явка на созвон (%)
+              </label>
               <input
+                id="out-showup"
                 type="number"
                 step="1"
                 min="50"
                 max="95"
                 value={params.showUpRate}
                 onChange={(e) => setParams({ ...params, showUpRate: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Квалификация в SQL (%)</label>
+              <label htmlFor="out-sql" className="text-[11px] text-zinc-400 block">
+                Квалификация в SQL (%)
+              </label>
               <input
+                id="out-sql"
                 type="number"
                 step="5"
                 min="20"
                 max="90"
                 value={params.sqlConversionRate}
-                onChange={(e) => setParams({ ...params, sqlConversionRate: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                onChange={(e) =>
+                  setParams({ ...params, sqlConversionRate: Number(e.target.value) })
+                }
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] text-zinc-400">Средний чек сделки / ACV ($)</label>
+              <label htmlFor="out-acv" className="text-[11px] text-zinc-400 block">
+                Чек сделки / ACV ($)
+              </label>
               <input
+                id="out-acv"
                 type="number"
                 step="1000"
                 min="1000"
                 value={params.acv}
                 onChange={(e) => setParams({ ...params, acv: Number(e.target.value) })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono tabular-nums text-white focus:outline-none focus:border-zinc-500"
               />
             </div>
           </div>
         </div>
 
-        {/* Right Output Dashboard (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
-          {/* Main Pipeline Metric Card */}
-          <div className="rounded-2xl p-5 border bg-sky-950/30 border-sky-800/60 transition-all">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <span className="text-[11px] uppercase tracking-wider font-bold text-zinc-400">
-                  Сгенерированный пайплайн в месяц (Pipeline Value)
-                </span>
-                <div className="text-3xl font-extrabold font-mono text-sky-400 mt-1">
-                  ${calculations.pipelineGenerated.toLocaleString()}
-                </div>
-                <div className="text-xs text-zinc-300 mt-1">
-                  Прогноз закрытой выручки (Closed ARR):{' '}
-                  <span className="font-mono font-bold text-emerald-400">
-                    ${calculations.monthlyArrClosed.toLocaleString()}
-                  </span>{' '}
-                  ({calculations.closedWonDeals} сделок/мес)
-                </div>
+        {/* Results */}
+        <div className="lg:col-span-7 lg:border-l lg:border-zinc-800/70 lg:pl-8 flex flex-col justify-between space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-5 border-b border-zinc-800/70">
+            <div>
+              <span className="text-xs text-zinc-400 block">Пайплайн в месяц</span>
+              <div className="text-3xl font-bold font-mono text-white mt-1 tabular-nums">
+                ${calculations.pipelineGenerated.toLocaleString()}
               </div>
+              <div className="text-xs text-zinc-400 mt-1 font-mono tabular-nums">
+                Прогноз ARR:{' '}
+                <span className="text-emerald-400 font-semibold">
+                  ${calculations.monthlyArrClosed.toLocaleString()}
+                </span>{' '}
+                ({calculations.closedWonDeals} сделок)
+              </div>
+            </div>
 
-              <div className="sm:text-right">
-                <div className="text-xs text-zinc-400">Инфраструктурный ROI:</div>
-                <div className="text-2xl font-black font-mono text-white mt-1">
-                  {calculations.roiMultiple}x
-                </div>
-                <div className="text-[10px] text-zinc-400 mt-0.5">
-                  Затраты на стек:{' '}
-                  <span className="text-zinc-300 font-mono">
-                    ${calculations.infraCost}/мес
-                  </span>
-                </div>
+            <div className="sm:text-right">
+              <span className="text-xs text-zinc-400 block">ROI инфраструктуры</span>
+              <div className="text-2xl font-bold font-mono text-white mt-1 tabular-nums">
+                {calculations.roiMultiple}x
+              </div>
+              <div className="text-xs text-zinc-400 mt-1 font-mono tabular-nums">
+                Стек: ${calculations.infraCost}/мес
               </div>
             </div>
           </div>
 
-          {/* Funnel Metrics Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="rounded-xl bg-zinc-900/60 border border-zinc-800/70 p-3">
-              <div className="text-[11px] text-zinc-400">Объем отправки</div>
-              <div className="text-lg font-bold font-mono text-white mt-0.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+            <div>
+              <div className="text-xs text-zinc-400">Отправок</div>
+              <div className="text-lg font-semibold font-mono text-white mt-0.5 tabular-nums">
                 {calculations.monthlyTotalSends.toLocaleString()}
               </div>
-              <div className="text-[10px] text-zinc-500 mt-0.5">
-                С {calculations.totalInboxes} ящиков
+              <div className="text-[11px] text-zinc-500 tabular-nums">
+                {calculations.totalInboxes} ящиков
               </div>
             </div>
 
-            <div className="rounded-xl bg-zinc-900/60 border border-zinc-800/70 p-3">
-              <div className="text-[11px] text-zinc-400">Всего ответов</div>
-              <div className="text-lg font-bold font-mono text-white mt-0.5">
+            <div>
+              <div className="text-xs text-zinc-400">Ответов</div>
+              <div className="text-lg font-semibold font-mono text-white mt-0.5 tabular-nums">
                 {calculations.totalReplies.toLocaleString()}
               </div>
-              <div className="text-[10px] text-zinc-500 mt-0.5">
+              <div className="text-[11px] text-zinc-500 tabular-nums">
                 Позитивных: {calculations.positiveReplies}
               </div>
             </div>
 
-            <div className="rounded-xl bg-zinc-900/60 border border-zinc-800/70 p-3">
-              <div className="text-[11px] text-zinc-400">Состоявшихся демо</div>
-              <div className="text-lg font-bold font-mono text-sky-400 mt-0.5">
+            <div>
+              <div className="text-xs text-zinc-400">Демо-встреч</div>
+              <div className="text-lg font-semibold font-mono text-white mt-0.5 tabular-nums">
                 {calculations.attendedMeetings}
               </div>
-              <div className="text-[10px] text-zinc-500 mt-0.5">
+              <div className="text-[11px] text-zinc-500 tabular-nums">
                 Букинг: {calculations.bookedMeetings}
               </div>
             </div>
 
-            <div className="rounded-xl bg-zinc-900/60 border border-zinc-800/70 p-3">
-              <div className="text-[11px] text-zinc-400">SQL для AE</div>
-              <div className="text-lg font-bold font-mono text-emerald-400 mt-0.5">
+            <div>
+              <div className="text-xs text-zinc-400">SQL</div>
+              <div className="text-lg font-semibold font-mono text-emerald-400 mt-0.5 tabular-nums">
                 {calculations.salesQualifiedLeads}
               </div>
-              <div className="text-[10px] text-zinc-500 mt-0.5">
-                Себестоимость SQL: ${calculations.costPerSql}
+              <div className="text-[11px] text-zinc-500 tabular-nums">
+                ${calculations.costPerSql} / SQL
               </div>
             </div>
           </div>
 
-          {/* SDR Lead Playbook Note */}
-          <div className="rounded-xl bg-zinc-900/40 border border-zinc-800 p-3.5 text-xs text-zinc-300 flex items-start gap-2.5">
-            <Sparkles className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-semibold text-white block mb-0.5">SDR Outbound Capacity Benchmark:</span>
-              При отправке <span className="font-mono text-sky-300">{params.dailySendsPerInbox}</span> писем в день с{' '}
-              <span className="font-mono text-sky-300">{calculations.totalInboxes}</span> ящиков (нагрузка одного SDR) система генерирует{' '}
-              <span className="font-mono text-emerald-300">{calculations.salesQualifiedLeads} SQL</span> в месяц. Превышение лимита в 50 писем/ящик уничтожает SPF/DMARC репутацию домена и обрушивает Deliverability ниже 80%.
-            </div>
-          </div>
+          <p className="pt-4 border-t border-zinc-800/70 text-xs text-zinc-400 leading-relaxed">
+            Безопасный потолок отправки — 30–45 писем в день с одного ящика. Превышение 50 писем в день ухудшает репутацию домена и снижает доставляемость ниже 80%.
+          </p>
         </div>
       </div>
     </div>
   );
 };
-

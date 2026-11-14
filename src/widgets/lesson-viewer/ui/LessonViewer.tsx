@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { Lesson } from '@/entities/lesson';
-import { useProgress } from '@/features/progress-tracker/model/useProgress';
+import {
+  useProgress,
+  useLearningMode,
+  CourseActivityTracker,
+} from '@/features/progress-tracker';
 import { FoundationalSection } from './FoundationalSection';
 import { BenchmarkSection } from './BenchmarkSection';
 import { ResearchSection } from './ResearchSection';
@@ -19,17 +22,7 @@ import { OutboundPipelineSimulator } from '@/features/calculators/ui/OutboundPip
 import { ResumeBulletGenerator } from '@/features/resume-builder/ui/ResumeBulletGenerator';
 import { getCourseBySlug } from '@/shared/lib/content-loader';
 import { getFoundationalExplainerForLesson } from '@/shared/lib/foundational-knowledge';
-import { 
-  CheckCircle2, 
-  Clock, 
-  ArrowLeft, 
-  ArrowRight, 
-  Sparkles,
-  BookOpen,
-  Sigma,
-  GraduationCap,
-  SlidersHorizontal
-} from 'lucide-react';
+import { CheckCircle2, ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface LessonViewerProps {
   lesson: Lesson;
@@ -44,113 +37,89 @@ export const LessonViewer = ({
   prevLesson,
   nextLesson,
 }: LessonViewerProps): React.JSX.Element => {
-  const [learningMode, setLearningMode] = useState<'all' | 'foundation' | 'senior'>('all');
+  const { learningMode, setLearningMode } = useLearningMode();
   const { isCompleted, toggleLesson } = useProgress();
   const completed = isCompleted(lesson.slug);
   const course = getCourseBySlug(courseSlug);
   const courseTitle = course ? course.title : 'Курс';
   const foundationalExplainer = getFoundationalExplainerForLesson(lesson);
 
-
   return (
-    <article className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      {/* Breadcrumb Navigation */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400 mb-6 flex-wrap">
-        <Link href="/" className="inline-flex items-center gap-1 hover:text-white transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5" />
-          Главная
+    <article className="max-w-3xl mx-auto px-6 py-10 sm:py-14 space-y-12">
+      <CourseActivityTracker courseSlug={courseSlug} lessonSlug={lesson.slug} />
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-zinc-400 flex-wrap">
+        <Link href="/" className="hover:text-zinc-200 transition-colors">
+          Курсы
         </Link>
-        <span className="text-zinc-600">/</span>
-        <Link href={`/courses/${courseSlug}/`} className="hover:text-white transition-colors truncate max-w-[200px] sm:max-w-none">
+        <span aria-hidden="true">/</span>
+        <Link href={`/courses/${courseSlug}/`} className="hover:text-zinc-200 transition-colors truncate max-w-[200px] sm:max-w-none">
           {courseTitle}
         </Link>
-        <span className="text-zinc-600">/</span>
-        <span className="text-zinc-300 truncate max-w-[180px] sm:max-w-xs">{lesson.moduleTitle}</span>
-        <span className="text-zinc-600">/</span>
-        <span className="text-zinc-100 font-medium truncate max-w-[150px] sm:max-w-xs">Урок {lesson.lessonNumber}</span>
+        <span aria-hidden="true">/</span>
+        <span className="text-zinc-200 truncate max-w-[200px] sm:max-w-xs">{lesson.moduleTitle}</span>
       </nav>
 
-      {/* Header Info */}
-      <header className="border-b border-zinc-800 pb-8">
-        <div className="flex flex-wrap items-center gap-2.5 mb-3">
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">
-            Урок {lesson.lessonNumber}
-          </span>
-          <span
-            className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
-              lesson.level === 'Lead'
-                ? 'bg-purple-950/40 border-purple-800 text-purple-300'
-                : lesson.level === 'Senior'
-                ? 'bg-indigo-950/40 border-indigo-800 text-indigo-300'
-                : 'bg-zinc-800 border-zinc-700 text-zinc-300'
-            }`}
-          >
-            Уровень: {lesson.level}
-          </span>
-          <span className="text-xs text-zinc-400 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" />
-            {lesson.readTimeMinutes} мин чтения
-          </span>
+      {/* Header */}
+      <header className="space-y-5">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
+          <span className="font-mono text-brand-400">Урок {lesson.lessonNumber}</span>
+          <span aria-hidden="true">·</span>
+          <span>Уровень {lesson.level}</span>
+          <span aria-hidden="true">·</span>
+          <span className="font-mono tabular-nums">{lesson.readTimeMinutes} мин</span>
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+        <h1 className="text-[26px] sm:text-4xl font-bold text-white tracking-tight leading-[1.2] text-balance">
           {lesson.title}
         </h1>
 
-        <div className="mt-4 p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 text-sm text-zinc-300 flex items-start gap-3">
-          <Sparkles className="w-5 h-5 text-brand-400 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-semibold text-white block mb-0.5">Суть без воды:</span>
-            {lesson.summary}
+        <p className="text-base sm:text-lg text-zinc-300 leading-relaxed">
+          {lesson.summary}
+        </p>
+
+        {/* Clean Learning Mode Switcher */}
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <span className="text-sm text-zinc-400">Режим отображения:</span>
+          <div className="inline-flex flex-wrap items-center gap-1 bg-zinc-900 p-1 rounded-xl border border-zinc-800 text-sm self-start sm:self-auto max-w-full">
+            <button
+              type="button"
+              onClick={() => setLearningMode('all')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap shrink-0 ${
+                learningMode === 'all'
+                  ? 'bg-zinc-100 text-zinc-950'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Полный курс
+            </button>
+            <button
+              type="button"
+              onClick={() => setLearningMode('foundation')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap shrink-0 ${
+                learningMode === 'foundation'
+                  ? 'bg-zinc-100 text-zinc-950'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              База с нуля
+            </button>
+            <button
+              type="button"
+              onClick={() => setLearningMode('senior')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap shrink-0 ${
+                learningMode === 'senior'
+                  ? 'bg-zinc-100 text-zinc-950'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Только Senior
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Learning Mode Switcher (От 0 до Senior) */}
-      <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="flex items-center gap-2 text-xs text-zinc-300">
-          <GraduationCap className="w-4 h-4 text-emerald-400" />
-          <span className="font-semibold text-white">Режим обучения:</span>
-          <span className="text-zinc-400 hidden md:inline">выберите подачу под свои цели</span>
-        </div>
-        <div className="flex items-center gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80 text-xs">
-          <button
-            type="button"
-            onClick={() => setLearningMode('all')}
-            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
-              learningMode === 'all'
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            ⚡ От 0 до Senior (Полный)
-          </button>
-          <button
-            type="button"
-            onClick={() => setLearningMode('foundation')}
-            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
-              learningMode === 'foundation'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            🔰 С нуля (Понимание)
-          </button>
-          <button
-            type="button"
-            onClick={() => setLearningMode('senior')}
-            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
-              learningMode === 'senior'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            🚀 Senior экспресс
-          </button>
-        </div>
-      </div>
-
-      {/* Step 1: Foundational Explainer (Shown in 'all' and 'foundation' modes) */}
+      {/* Step 1: Foundational Explainer */}
       {(learningMode === 'all' || learningMode === 'foundation') && (
         <FoundationalSection
           explainer={foundationalExplainer}
@@ -161,20 +130,19 @@ export const LessonViewer = ({
 
       {/* Core Concepts & Formulas */}
       {lesson.coreConcepts.length > 0 && (
-        <section className="my-8 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6">
-          <h2 className="text-base font-bold text-white flex items-center gap-2 mb-4">
-            <Sigma className="w-4 h-4 text-brand-400" />
-            Ключевые понятия и математические формулы
+        <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            Ключевые понятия и формулы
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {lesson.coreConcepts.map((c, idx) => (
-              <div key={idx} className="rounded-xl border border-zinc-800/80 bg-zinc-950/80 p-4">
-                <h3 className="text-sm font-bold text-brand-300">{c.title}</h3>
-                <p className="mt-1.5 text-xs text-zinc-300 leading-relaxed">{c.explanation}</p>
+              <div key={idx} className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-5 space-y-3">
+                <h3 className="text-base font-semibold text-white">{c.title}</h3>
+                <p className="text-[15px] sm:text-base text-zinc-300 leading-relaxed">{c.explanation}</p>
                 {c.formulas && c.formulas.length > 0 && (
-                  <div className="mt-2.5 pt-2.5 border-t border-zinc-800/60 space-y-1">
+                  <div className="pt-3 border-t border-zinc-800/60 space-y-1.5">
                     {c.formulas.map((f, fIdx) => (
-                      <div key={fIdx} className="text-xs font-mono text-emerald-400 bg-zinc-900 px-2 py-1 rounded">
+                      <div key={fIdx} className="text-sm font-mono text-emerald-400 break-words">
                         {f}
                       </div>
                     ))}
@@ -186,24 +154,23 @@ export const LessonViewer = ({
         </section>
       )}
 
-      {/* Benchmarks (Shown in 'all' and 'senior' modes) */}
+      {/* Benchmarks */}
       {learningMode !== 'foundation' && (
         <BenchmarkSection metrics={lesson.benchmarkMetrics} />
       )}
 
-      {/* Research Insights (Shown in 'all' and 'senior' modes) */}
+      {/* Research Insights */}
       {learningMode !== 'foundation' && (
         <ResearchSection insights={lesson.researchInsights} />
       )}
 
       {/* Longread Deep Dive */}
-      <section className="my-10">
-        <div className="flex items-center gap-2 mb-4">
-          <BookOpen className="w-5 h-5 text-brand-400" />
-          <h2 className="text-xl font-bold text-white">Углубленный разбор темы</h2>
-        </div>
-        <div className="prose prose-invert prose-zinc max-w-none prose-headings:text-white prose-headings:font-bold prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-3 prose-p:text-zinc-300 prose-p:leading-relaxed prose-li:text-zinc-300 prose-strong:text-white prose-code:text-brand-300 prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
-          <div className="whitespace-pre-line leading-relaxed text-sm text-zinc-300">
+      <section className="pt-10 border-t border-zinc-800/70 space-y-5">
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          Подробный разбор
+        </h2>
+        <div className="prose prose-invert prose-zinc max-w-none prose-headings:text-white prose-headings:font-semibold prose-h2:text-lg prose-h2:mt-8 prose-h2:mb-3 prose-p:text-zinc-300 prose-p:leading-relaxed prose-li:text-zinc-300 prose-strong:text-white prose-code:text-brand-300 prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+          <div className="whitespace-pre-line leading-[1.75] text-base sm:text-[17px] text-zinc-200">
             {lesson.longreadMarkdown}
           </div>
         </div>
@@ -220,41 +187,29 @@ export const LessonViewer = ({
 
       {/* Contextual Interactive Simulators */}
       {(lesson.slug.startsWith('1-1-') || lesson.slug.startsWith('1-2-') || lesson.slug.startsWith('1-3-')) && (
-        <section className="my-10 space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-brand-400" />
-            <h3 className="text-lg font-bold text-white">Интерактивный тренажер к уроку</h3>
-          </div>
+        <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+          <h3 className="text-xl font-bold text-white tracking-tight">Практический симулятор</h3>
           <UnitEconomicsSimulator />
         </section>
       )}
 
       {lesson.slug.startsWith('2-4-') && (
-        <section className="my-10 space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-brand-400" />
-            <h3 className="text-lg font-bold text-white">Интерактивный калькулятор A/B теста</h3>
-          </div>
+        <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+          <h3 className="text-xl font-bold text-white tracking-tight">Калькулятор A/B-теста</h3>
           <AbTestCalculator />
         </section>
       )}
 
       {(lesson.slug.startsWith('7-1-') || lesson.slug.startsWith('7-2-') || lesson.slug.startsWith('11-1-')) && (
-        <section className="my-10 space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-lg font-bold text-white">Интерактивный симулятор окупаемости медиабаинга</h3>
-          </div>
+        <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+          <h3 className="text-xl font-bold text-white tracking-tight">Симулятор окупаемости медиабаинга</h3>
           <MediaBuyingSimulator />
         </section>
       )}
 
       {(lesson.slug.startsWith('12-2-') || lesson.slug.startsWith('16-1-')) && (
-        <section className="my-10 space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <h3 className="text-lg font-bold text-white">Интерактивный симулятор P&L партнерской программы</h3>
-          </div>
+        <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+          <h3 className="text-xl font-bold text-white tracking-tight">Симулятор P&L партнерской программы</h3>
           <AffiliatePnLSimulator />
         </section>
       )}
@@ -263,11 +218,8 @@ export const LessonViewer = ({
         lesson.slug.startsWith('19-1-') ||
         lesson.slug.startsWith('20-1-') ||
         lesson.slug.startsWith('21-1-')) && (
-        <section className="my-10 space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-lg font-bold text-white">Интерактивный симулятор воронки B2B аутрича</h3>
-          </div>
+        <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+          <h3 className="text-xl font-bold text-white tracking-tight">Симулятор воронки B2B-аутрича</h3>
           <OutboundPipelineSimulator />
         </section>
       )}
@@ -277,11 +229,8 @@ export const LessonViewer = ({
         lesson.slug.startsWith('11-3-') ||
         lesson.slug.startsWith('16-3-') ||
         lesson.slug.startsWith('21-3-')) && (
-        <section className="my-10 space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-lg font-bold text-white">Генератор формулировок резюме (Google XYZ)</h3>
-          </div>
+        <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+          <h3 className="text-xl font-bold text-white tracking-tight">Генератор формулировок резюме</h3>
           <ResumeBulletGenerator />
         </section>
       )}
@@ -290,37 +239,37 @@ export const LessonViewer = ({
       <ResumeBulletSection bullets={lesson.resumeBullets} />
 
       {/* Bottom Completion & Navigation */}
-      <footer className="mt-12 pt-8 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <footer className="pt-8 border-t border-zinc-800/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button
           onClick={() => toggleLesson(lesson.slug)}
           type="button"
-          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+          className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
             completed
-              ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-              : 'bg-zinc-800 text-zinc-200 hover:bg-brand-600 hover:text-white'
+              ? 'bg-emerald-950/60 border border-emerald-800 text-emerald-300 hover:bg-emerald-900/60'
+              : 'bg-zinc-900 border border-zinc-800 text-zinc-200 hover:bg-zinc-800'
           }`}
         >
           <CheckCircle2 className="w-4 h-4" />
-          {completed ? 'Пройдено (Нажмите, чтобы сбросить)' : 'Отметить как пройденный'}
+          {completed ? 'Урок пройден' : 'Отметить пройденным'}
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {prevLesson && (
             <Link
               href={`/courses/${courseSlug}/lessons/${prevLesson.slug}/`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft className="w-4 h-4" />
               Предыдущий
             </Link>
           )}
           {nextLesson && (
             <Link
               href={`/courses/${courseSlug}/lessons/${nextLesson.slug}/`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white hover:bg-brand-500 transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold bg-zinc-100 text-zinc-950 hover:bg-white transition-colors"
             >
               Следующий
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-4 h-4" />
             </Link>
           )}
         </div>

@@ -1,5 +1,4 @@
 import { CompanyCaseStudy } from '@/entities/lesson';
-import { Building2, ArrowUpRight, CheckCircle } from 'lucide-react';
 
 interface CaseStudySectionProps {
   caseStudies: CompanyCaseStudy[];
@@ -9,63 +8,53 @@ export const CaseStudySection = ({ caseStudies }: CaseStudySectionProps): React.
   if (caseStudies.length === 0) return null;
 
   return (
-    <section className="my-10 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-          <Building2 className="w-5 h-5" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-white">Реальные кейсы компаний (Production Case Studies)</h3>
-          <p className="text-xs text-zinc-400">
-            Как теория разворачивается в реальных P&L отчетах бизнеса.
-          </p>
-        </div>
+    <section className="pt-10 border-t border-zinc-800/70 space-y-6">
+      <div>
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          Реальные кейсы компаний
+        </h2>
+        <p className="text-sm sm:text-base text-zinc-400 mt-1">
+          Как решения отражаются на P&amp;L и операционных метриках бизнеса.
+        </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         {caseStudies.map((cs, idx) => (
           <div
             key={idx}
-            className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-5 space-y-4"
+            className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-5 sm:p-6 space-y-5"
           >
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white">{cs.companyName}</span>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
-                  {cs.industry}
-                </span>
+            <div className="flex flex-wrap items-baseline justify-between gap-2 pb-3 border-b border-zinc-800/60">
+              <div className="flex flex-wrap items-baseline gap-2">
+                <h3 className="text-lg font-semibold text-white">{cs.companyName}</h3>
+                <span className="text-sm text-zinc-500">· {cs.industry}</span>
               </div>
-              <span className="text-xs font-mono text-cyan-400 bg-cyan-950/40 border border-cyan-800/50 px-2.5 py-0.5 rounded">
-                Масштаб: {cs.scale}
+              <span className="text-sm font-mono text-zinc-400 tabular-nums">
+                {cs.scale}
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/60 space-y-1">
-                <span className="font-semibold text-rose-300 block">Критический вызов / Проблема:</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[15px] sm:text-base">
+              <div className="space-y-1.5">
+                <div className="text-sm font-medium text-rose-400">Вызов и проблема</div>
                 <p className="text-zinc-300 leading-relaxed">{cs.problem}</p>
               </div>
 
-              <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/60 space-y-1">
-                <span className="font-semibold text-emerald-300 block">Стратегическое решение:</span>
+              <div className="space-y-1.5">
+                <div className="text-sm font-medium text-emerald-400">Решение</div>
                 <p className="text-zinc-300 leading-relaxed">{cs.strategicMove}</p>
               </div>
             </div>
 
-            <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-800/40 text-xs flex items-start gap-2">
-              <ArrowUpRight className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold text-emerald-300">Результат в P&L: </span>
-                <span className="text-emerald-100">{cs.quantitativeResult}</span>
-              </div>
-            </div>
-
-            <div className="text-[11px] text-zinc-400 flex items-start gap-1.5 pt-1">
-              <CheckCircle className="w-3.5 h-3.5 text-brand-400 shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-zinc-300">Главный вывод для сеньора: </strong>
+            <div className="pt-4 border-t border-zinc-800/60 space-y-2.5 text-[15px] sm:text-base">
+              <p className="text-zinc-200 leading-relaxed">
+                <span className="font-medium text-emerald-400">Результат в P&amp;L: </span>
+                {cs.quantitativeResult}
+              </p>
+              <p className="text-zinc-300 leading-relaxed">
+                <span className="font-medium text-zinc-200">Вывод: </span>
                 {cs.keyLesson}
-              </span>
+              </p>
             </div>
           </div>
         ))}
@@ -73,4 +62,3 @@ export const CaseStudySection = ({ caseStudies }: CaseStudySectionProps): React.
     </section>
   );
 };
-
