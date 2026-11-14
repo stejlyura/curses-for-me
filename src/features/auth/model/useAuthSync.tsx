@@ -20,6 +20,8 @@ import {
   markAuthCacheEnabled,
   markDirtyOffline,
   readLocalSnapshot,
+  readSessionToken,
+  writeSessionToken,
 } from '@/features/progress-tracker/model/learning-store';
 import {
   LocalLearningSnapshot,
@@ -51,6 +53,8 @@ export const AuthSyncProvider = ({
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const authStatusRef = useRef<AuthStatus>('checking');
+  const authEpochRef = useRef(0);
+  const sessionTokenRef = useRef<string | null>(null);
   const isApplyingRemoteRef = useRef(false);
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSyncedJsonRef = useRef<string>('');
@@ -61,60 +65,78 @@ export const AuthSyncProvider = ({
     setUsername(nextUser);
   }, []);
 
-  const pushStateToDb = useCallback(async (snapshot: LocalLearningSnapshot) => {
-    if (authStatusRef.current !== 'authenticated') return;
-    if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      markDirtyOffline(true);
-      return;
-    }
+  const buildAuthHeaders = useCallback(
+    (extra?: Record<string, string>): Record<string, string> => {
+      const token = sessionTokenRef.current ?? readSessionToken();
+      if (token) {
+        sessionTokenRef.current = token;
+        return { ...(extra ?? {}), Authorization: `Bearer ${token}` };
+      }
+      return { ...(extra ?? {}) };
+    },
+    []
+  );
 
-    const serialized = JSON.stringify(snapshot);
-    if (serialized === lastSyncedJsonRef.current) {
-      markDirtyOffline(false);
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/state/', {
-        method: 'PUT',
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-        body: JSON.stringify({ state: snapshot }),
-      });
-
-      if (res.status === 401) {
-        clearAllLocalLearningState();
-        lastSyncedJsonRef.current = '';
-        updateAuthStatus('unauthenticated', null);
+  const pushStateToDb = useCallback(
+    async (snapshot: LocalLearningSnapshot) => {
+      if (authStatusRef.current !== 'authenticated') return;
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        markDirtyOffline(true);
         return;
       }
 
-      if (res.ok) {
-        lastSyncedJsonRef.current = serialized;
+      const serialized = JSON.stringify(snapshot);
+      if (serialized === lastSyncedJsonRef.current) {
         markDirtyOffline(false);
+        return;
       }
-    } catch {
-      markDirtyOffline(true);
-    }
-  }, [updateAuthStatus]);
 
-  const hydrateFromDb = useCallback(async () => {
+      try {
+        const res = await fetch('/api/state/', {
+          method: 'PUT',
+          credentials: 'same-origin',
+          headers: buildAuthHeaders({ 'Content-Type': 'application/json' }),
+          cache: 'no-store',
+          body: JSON.stringify({ state: snapshot }),
+        });
+
+        if (res.status === 401) {
+          sessionTokenRef.current = null;
+          clearAllLocalLearningState();
+          lastSyncedJsonRef.current = '';
+          updateAuthStatus('unauthenticated', null);
+          return;
+        }
+
+        if (res.ok) {
+          lastSyncedJsonRef.current = serialized;
+          markDirtyOffline(false);
+        }
+      } catch {
+        markDirtyOffline(true);
+      }
+    },
+    [buildAuthHeaders, updateAuthStatus]
+  );
+
+  const hydrateFromDb = useCallback(async (): Promise<'ok' | 'unauthorized' | 'error'> => {
     try {
       const res = await fetch('/api/state/', {
         method: 'GET',
         credentials: 'same-origin',
+        headers: buildAuthHeaders(),
         cache: 'no-store',
       });
 
       if (res.status === 401) {
+        sessionTokenRef.current = null;
         clearAllLocalLearningState();
         lastSyncedJsonRef.current = '';
         updateAuthStatus('unauthenticated', null);
-        return;
+        return 'unauthorized';
       }
 
-      if (!res.ok) return;
+      if (!res.ok) return 'error';
 
       const data = (await res.json()) as { state?: LocalLearningSnapshot | null };
       const remoteState = data.state ?? null;
@@ -144,43 +166,55 @@ export const AuthSyncProvider = ({
         const localState = readLocalSnapshot();
         await pushStateToDb(localState);
       }
+
+      return 'ok';
     } catch {
       // Offline: retain cached authenticated state if already signed in
+      return 'error';
     }
-  }, [pushStateToDb, updateAuthStatus]);
+  }, [buildAuthHeaders, pushStateToDb, updateAuthStatus]);
 
   const verifySessionAndSync = useCallback(async () => {
+    const epoch = authEpochRef.current;
     try {
       const res = await fetch('/api/auth/session/', {
         method: 'GET',
         credentials: 'same-origin',
+        headers: buildAuthHeaders(),
         cache: 'no-store',
       });
+
+      if (epoch !== authEpochRef.current) return;
 
       if (!res.ok) {
         throw new Error('Session check HTTP failure');
       }
 
       const data = (await res.json()) as { authenticated?: boolean; username?: string | null };
+      if (epoch !== authEpochRef.current) return;
+
       if (data.authenticated && data.username) {
         markAuthCacheEnabled(true);
         updateAuthStatus('authenticated', data.username);
         await hydrateFromDb();
       } else {
+        sessionTokenRef.current = null;
         clearAllLocalLearningState();
         lastSyncedJsonRef.current = '';
         updateAuthStatus('unauthenticated', null);
       }
     } catch {
+      if (epoch !== authEpochRef.current) return;
       // Network error (offline PWA): allow previously authenticated device to use local cache offline
       if (isAuthCacheAllowed()) {
         updateAuthStatus('authenticated', 'admin');
       } else {
+        sessionTokenRef.current = null;
         clearAllLocalLearningState();
         updateAuthStatus('unauthenticated', null);
       }
     }
-  }, [hydrateFromDb, updateAuthStatus]);
+  }, [buildAuthHeaders, hydrateFromDb, updateAuthStatus]);
 
   useEffect(() => {
     void verifySessionAndSync();
@@ -239,6 +273,7 @@ export const AuthSyncProvider = ({
       inputUser: string,
       inputPass: string
     ): Promise<{ ok: boolean; error?: string }> => {
+      authEpochRef.current += 1;
       try {
         const res = await fetch('/api/auth/login/', {
           method: 'POST',
@@ -251,6 +286,7 @@ export const AuthSyncProvider = ({
         const payload = (await res.json()) as {
           authenticated?: boolean;
           username?: string;
+          token?: string;
           error?: string;
         };
 
@@ -263,8 +299,19 @@ export const AuthSyncProvider = ({
 
         clearAllLocalLearningState();
         markAuthCacheEnabled(true);
+        const signedToken = typeof payload.token === 'string' ? payload.token : null;
+        sessionTokenRef.current = signedToken;
+        writeSessionToken(signedToken);
+
         updateAuthStatus('authenticated', payload.username || inputUser.trim());
-        await hydrateFromDb();
+        const hydrateStatus = await hydrateFromDb();
+        if (hydrateStatus === 'unauthorized') {
+          return {
+            ok: false,
+            error: 'Не удалось подтвердить сессию. Попробуйте ещё раз.',
+          };
+        }
+
         setIsAuthModalOpen(false);
         return { ok: true };
       } catch {
@@ -278,6 +325,7 @@ export const AuthSyncProvider = ({
   );
 
   const logout = useCallback(async () => {
+    authEpochRef.current += 1;
     if (syncTimerRef.current) {
       clearTimeout(syncTimerRef.current);
       syncTimerRef.current = null;
@@ -287,16 +335,18 @@ export const AuthSyncProvider = ({
       await fetch('/api/auth/logout/', {
         method: 'POST',
         credentials: 'same-origin',
+        headers: buildAuthHeaders(),
         cache: 'no-store',
       });
     } catch {
       // Clear local state regardless of network failure
     }
 
+    sessionTokenRef.current = null;
     lastSyncedJsonRef.current = '';
     clearAllLocalLearningState();
     updateAuthStatus('unauthenticated', null);
-  }, [updateAuthStatus]);
+  }, [buildAuthHeaders, updateAuthStatus]);
 
   const openAuthModal = useCallback(() => setIsAuthModalOpen(true), []);
   const closeAuthModal = useCallback(() => setIsAuthModalOpen(false), []);

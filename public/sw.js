@@ -1,4 +1,4 @@
-const CACHE_NAME = 'marketolog-v6';
+const CACHE_NAME = 'marketolog-v7';
 
 const PRECACHE_ROUTES = [
   '/',

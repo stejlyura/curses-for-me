@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   authenticateCredentials,
+  buildSessionCookieOptions,
   createSessionCookieValue,
-  SESSION_COOKIE_NAME,
   SESSION_TTL_SECONDS,
-  shouldUseSecureCookie,
 } from '@/lib/server-auth';
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -29,19 +28,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const token = createSessionCookieValue(username);
     const response = NextResponse.json(
-      { authenticated: true, username },
+      { authenticated: true, username, token },
       { status: 200, headers: { 'Cache-Control': 'no-store, private' } }
     );
 
-    response.cookies.set({
-      name: SESSION_COOKIE_NAME,
-      value: token,
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: SESSION_TTL_SECONDS,
-      secure: shouldUseSecureCookie(req),
-    });
+    response.cookies.set(buildSessionCookieOptions(req, token, SESSION_TTL_SECONDS));
 
     return response;
   } catch {

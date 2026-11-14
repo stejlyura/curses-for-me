@@ -21,9 +21,10 @@ export const AuthHeaderControl = (): React.JSX.Element | null => {
         type="button"
         onClick={() => void logout()}
         aria-label={`Выйти (${username ?? 'аккаунт'})`}
-        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-zinc-300 bg-zinc-900/80 border border-zinc-800 rounded-lg hover:text-white hover:border-zinc-700 transition-colors whitespace-nowrap shrink-0"
+        title={`Аккаунт: ${username ?? 'admin'} · Нажмите, чтобы выйти`}
+        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-emerald-100 bg-emerald-950/35 border border-emerald-500/35 rounded-lg hover:text-white hover:border-emerald-400/60 transition-colors whitespace-nowrap shrink-0"
       >
-        <LogOut className="w-3.5 h-3.5 text-zinc-400" />
+        <LogOut className="w-3.5 h-3.5 text-emerald-400" />
         <span>Выйти</span>
       </button>
     );

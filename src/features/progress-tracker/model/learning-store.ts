@@ -20,6 +20,7 @@ import {
 } from './learning-types';
 
 export const AUTH_CACHED_STORAGE_KEY = 'marketolog_auth_cached';
+export const SESSION_TOKEN_STORAGE_KEY = 'marketolog_session_token';
 export const DIRTY_OFFLINE_STORAGE_KEY = 'marketolog_dirty_offline';
 
 export const COMPLETED_LESSONS_STORAGE_KEY = 'marketolog_completed_lessons';
@@ -80,6 +81,29 @@ export const markAuthCacheEnabled = (enabled: boolean): void => {
   }
 };
 
+export const readSessionToken = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const token = window.localStorage.getItem(SESSION_TOKEN_STORAGE_KEY);
+    return token && token.length > 0 ? token : null;
+  } catch {
+    return null;
+  }
+};
+
+export const writeSessionToken = (token: string | null): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    if (token && token.length > 0) {
+      window.localStorage.setItem(SESSION_TOKEN_STORAGE_KEY, token);
+    } else {
+      window.localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
+    }
+  } catch {
+    // ignore storage failures
+  }
+};
+
 export const isDirtyOffline = (): boolean => {
   if (typeof window === 'undefined') return false;
   try {
@@ -114,6 +138,7 @@ export const clearAllLocalLearningState = (): void => {
   if (typeof window === 'undefined') return;
   try {
     window.localStorage.removeItem(AUTH_CACHED_STORAGE_KEY);
+    window.localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
     window.localStorage.removeItem(DIRTY_OFFLINE_STORAGE_KEY);
     window.localStorage.removeItem(ACTIVE_COURSE_STORAGE_KEY);
     window.localStorage.removeItem(LEARNING_MODE_STORAGE_KEY);

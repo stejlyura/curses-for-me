@@ -60,6 +60,14 @@ export const createSessionCookieValue = (username: string): string => {
   );
 };
 
+export const extractBearerToken = (req?: NextRequest): string | undefined => {
+  if (!req) return undefined;
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader) return undefined;
+  const match = /^Bearer\s+(.+)$/i.exec(authHeader.trim());
+  return match?.[1]?.trim() || undefined;
+};
+
 export const requireAuthenticatedSession = async (
   req?: NextRequest
 ): Promise<SessionPayload | null> => {
@@ -72,14 +80,18 @@ export const requireAuthenticatedSession = async (
       rawCookie = store.get(SESSION_COOKIE_NAME)?.value;
     }
 
-    const payload = verifySessionToken(rawCookie, getSessionSecret());
-    if (!payload) return null;
+    const candidates = [rawCookie, extractBearerToken(req)].filter(
+      (val): val is string => typeof val === 'string' && val.length > 0
+    );
 
-    if (!timingSafeStringEqual(payload.sub, getExpectedUsername())) {
-      return null;
+    for (const candidate of candidates) {
+      const payload = verifySessionToken(candidate, getSessionSecret());
+      if (payload && timingSafeStringEqual(payload.sub, getExpectedUsername())) {
+        return payload;
+      }
     }
 
-    return payload;
+    return null;
   } catch {
     return null;
   }
@@ -91,4 +103,34 @@ export const shouldUseSecureCookie = (req: NextRequest): boolean => {
     return proto.split(',')[0].trim() === 'https';
   }
   return req.nextUrl.protocol === 'https:';
+};
+
+export const buildSessionCookieOptions = (
+  req: NextRequest,
+  value: string,
+  maxAge: number
+) => {
+  const isSecure = shouldUseSecureCookie(req);
+  if (isSecure) {
+    return {
+      name: SESSION_COOKIE_NAME,
+      value,
+      httpOnly: true,
+      sameSite: 'none' as const,
+      secure: true,
+      partitioned: true,
+      path: '/',
+      maxAge,
+    };
+  }
+
+  return {
+    name: SESSION_COOKIE_NAME,
+    value,
+    httpOnly: true,
+    sameSite: 'lax' as const,
+    secure: false,
+    path: '/',
+    maxAge,
+  };
 };
