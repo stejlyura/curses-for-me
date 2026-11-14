@@ -1,4 +1,4 @@
-const CACHE_NAME = 'marketolog-v7';
+const CACHE_NAME = 'mydataset-v1';
 
 const PRECACHE_ROUTES = [
   '/',
@@ -150,7 +150,7 @@ async function findBestCachedNavigation(url) {
     (await caches.match('/')) || (await caches.match('/?source=pwa'));
   if (rootMatch) return rootMatch;
 
-  return new Response('Marketolog Academy: оффлайн-режим (откройте главную страницу).', {
+  return new Response('My dataset: оффлайн-режим (откройте главную страницу).', {
     status: 503,
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });

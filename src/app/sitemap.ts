@@ -4,7 +4,7 @@ import { getAllCourses, getAllLessons } from '@/shared/lib/content-loader';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://marketolog-course.vercel.app';
+  const baseUrl = 'https://my-dataset.vercel.app';
   const courses = getAllCourses();
   const lessons = getAllLessons();
 

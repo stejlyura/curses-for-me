@@ -40,11 +40,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!lesson) {
     return {
-      title: 'Урок не найден | Marketolog Academy',
+      title: 'Урок не найден | My dataset',
     };
   }
 
-  const title = `${lesson.lessonNumber} ${lesson.title} | ${course?.title || 'Marketolog'}`;
+  const title = `${lesson.lessonNumber} ${lesson.title} | ${course?.title || 'My dataset'}`;
 
   return {
     title,
@@ -52,9 +52,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description: lesson.summary,
-      url: `https://marketolog-course.vercel.app/courses/${courseSlug}/lessons/${lesson.slug}/`,
+      url: `https://my-dataset.vercel.app/courses/${courseSlug}/lessons/${lesson.slug}/`,
       type: 'article',
-      siteName: 'Marketolog Academy',
+      siteName: 'My dataset',
     },
     twitter: {
       card: 'summary_large_image',

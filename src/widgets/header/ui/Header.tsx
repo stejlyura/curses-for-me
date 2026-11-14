@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { PwaInstallButton } from '@/features/pwa/ui/PwaInstallButton';
 import { SearchFilterModal } from '@/features/search/ui/SearchFilterModal';
 import { InterviewSimulatorModal } from '@/features/interview-simulator/ui/InterviewSimulatorModal';
@@ -22,9 +23,17 @@ export const Header = (): React.JSX.Element => {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 sm:gap-8 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="text-[15px] sm:text-base font-bold tracking-tight text-white whitespace-nowrap shrink-0 hover:text-zinc-200 transition-colors"
+          className="inline-flex items-center gap-2 text-[15px] sm:text-base font-bold tracking-tight text-white whitespace-nowrap shrink-0 hover:text-zinc-200 transition-colors"
         >
-          Marketolog Academy
+          <Image
+            src="/icon.svg"
+            alt=""
+            width={24}
+            height={24}
+            referrerPolicy="no-referrer"
+            className="h-6 w-6 rounded-md shrink-0"
+          />
+          <span>My dataset</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">

@@ -34,8 +34,12 @@
   <line x1="0" y1="64" x2="1280" y2="64" stroke="#27272a" stroke-width="1" />
 
   <rect x="40" y="14" width="36" height="36" rx="10" fill="url(#brand)" />
-  <text x="86" y="34" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="bold" font-size="16">Marketolog Academy</text>
-  <text x="86" y="48" fill="#a1a1aa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Zero-Fluff Executive Curriculum</text>
+  <rect x="47" y="22" width="14" height="5" rx="2.5" fill="#34d399" />
+  <circle cx="66" cy="24.5" r="2.5" fill="#10b981" />
+  <rect x="47" y="30" width="22" height="5" rx="2.5" fill="#e0e7ff" />
+  <rect x="47" y="38" width="22" height="5" rx="2.5" fill="#a5b4fc" />
+  <text x="86" y="34" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="bold" font-size="16">My dataset</text>
+  <text x="86" y="48" fill="#a1a1aa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Structured Growth &amp; Knowledge Base</text>
 
   <!-- Header Stat Badges -->
   <rect x="860" y="18" width="160" height="28" rx="8" fill="#18181b" stroke="#27272a" />
@@ -45,7 +49,7 @@
 
   <!-- Hero Section -->
   <rect x="40" y="88" width="1200" height="150" rx="24" fill="#18181b" stroke="#27272a" />
-  <text x="80" y="140" fill="#ffffff" font-family="sans-serif" font-weight="800" font-size="32">Практическая академия маркетинга и Growth</text>
+  <text x="80" y="140" fill="#ffffff" font-family="sans-serif" font-weight="800" font-size="32">My dataset · Системная база знаний и тренажеры</text>
   <text x="80" y="175" fill="#a1a1aa" font-family="sans-serif" font-size="14">Подготовка к сеньорным позициям: юнит-экономика, когорты, медиабаинг, аффилиат-сети и B2B аутрич</text>
   <text x="80" y="205" fill="#34d399" font-family="sans-serif" font-weight="600" font-size="13">⚡ 100% Offline Ready • Без воды • Интерактивные симуляторы</text>
 

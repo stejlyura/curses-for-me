@@ -27,15 +27,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!course) {
     return {
-      title: 'Курс не найден | Marketolog Academy',
+      title: 'Курс не найден | My dataset',
     };
   }
 
   return {
-    title: `${course.title} — Практический курс | Marketolog`,
+    title: `${course.title} — Практический курс | My dataset`,
     description: course.shortDescription,
     openGraph: {
-      title: `${course.title} | Marketolog Academy`,
+      title: `${course.title} | My dataset`,
       description: course.shortDescription,
       type: 'website',
     },
