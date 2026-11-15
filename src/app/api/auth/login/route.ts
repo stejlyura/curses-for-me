@@ -3,6 +3,7 @@ import {
   authenticateCredentials,
   buildSessionCookieOptions,
   createSessionCookieValue,
+  getExpectedUsername,
   SESSION_TTL_SECONDS,
 } from '@/lib/server-auth';
 
@@ -26,9 +27,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const token = createSessionCookieValue(username);
+    const canonicalUser = getExpectedUsername();
+    const token = createSessionCookieValue(canonicalUser);
     const response = NextResponse.json(
-      { authenticated: true, username, token },
+      { authenticated: true, username: canonicalUser, token },
       { status: 200, headers: { 'Cache-Control': 'no-store, private' } }
     );
 

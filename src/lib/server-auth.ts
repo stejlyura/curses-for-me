@@ -36,15 +36,19 @@ export const getExpectedUsername = (): string => {
 
 export const authenticateCredentials = (username: string, password: string): boolean => {
   const expectedUser = getExpectedUsername();
+  const normalizedUser = username.trim().toLowerCase();
+  const normalizedExpectedUser = expectedUser.trim().toLowerCase();
   const customPass = process.env.APP_LOGIN_PASS;
 
   if (customPass && customPass.length > 0) {
-    return verifyCredentials(username, password, expectedUser, customPass);
+    return verifyCredentials(normalizedUser, password, normalizedExpectedUser, customPass);
   }
 
+  const trimmedPass = password.trim();
   return (
-    timingSafeStringEqual(username, expectedUser) &&
-    verifyPasswordDigest(password, DEFAULT_PASSWORD_SALT, DEFAULT_PASSWORD_DIGEST)
+    timingSafeStringEqual(normalizedUser, normalizedExpectedUser) &&
+    (verifyPasswordDigest(password, DEFAULT_PASSWORD_SALT, DEFAULT_PASSWORD_DIGEST) ||
+      verifyPasswordDigest(trimmedPass, DEFAULT_PASSWORD_SALT, DEFAULT_PASSWORD_DIGEST))
   );
 };
 

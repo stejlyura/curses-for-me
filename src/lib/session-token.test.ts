@@ -53,3 +53,11 @@ test('signSessionToken and verifySessionToken roundtrip valid token and reject t
   // Wrong secret
   assert.equal(verifySessionToken(token, 'other-secret-0123456789abcdef', now + 1_000), null);
 });
+
+test('authenticateCredentials normalizes mobile username case and surrounding spaces', async () => {
+  const { authenticateCredentials } = await import('./server-auth');
+  assert.equal(authenticateCredentials('admin', 'gangstervegas'), true);
+  assert.equal(authenticateCredentials('Admin', 'gangstervegas'), true);
+  assert.equal(authenticateCredentials(' Admin ', ' gangstervegas '), true);
+  assert.equal(authenticateCredentials('admin', 'wrongpass'), false);
+});
