@@ -54,10 +54,23 @@ test('signSessionToken and verifySessionToken roundtrip valid token and reject t
   assert.equal(verifySessionToken(token, 'other-secret-0123456789abcdef', now + 1_000), null);
 });
 
-test('authenticateCredentials normalizes mobile username case and surrounding spaces', async () => {
+test('authenticateCredentials normalizes mobile username case, surrounding spaces, invisible chars, and env secrets', async () => {
   const { authenticateCredentials } = await import('./server-auth');
   assert.equal(authenticateCredentials('admin', 'gangstervegas'), true);
   assert.equal(authenticateCredentials('Admin', 'gangstervegas'), true);
   assert.equal(authenticateCredentials(' Admin ', ' gangstervegas '), true);
+  assert.equal(authenticateCredentials('admin\u200B', '\uFEFFgangstervegas\u00A0'), true);
   assert.equal(authenticateCredentials('admin', 'wrongpass'), false);
+
+  const prevPass = process.env.APP_LOGIN_PASS;
+  try {
+    process.env.APP_LOGIN_PASS = ' "gangstervegas" ';
+    assert.equal(authenticateCredentials('admin', 'gangstervegas'), true);
+  } finally {
+    if (prevPass === undefined) {
+      delete process.env.APP_LOGIN_PASS;
+    } else {
+      process.env.APP_LOGIN_PASS = prevPass;
+    }
+  }
 });

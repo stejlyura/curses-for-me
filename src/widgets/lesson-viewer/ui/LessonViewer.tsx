@@ -22,6 +22,7 @@ import { OutboundPipelineSimulator } from '@/features/calculators/ui/OutboundPip
 import { ResumeBulletGenerator } from '@/features/resume-builder/ui/ResumeBulletGenerator';
 import { getCourseBySlug } from '@/shared/lib/content-loader';
 import { getFoundationalExplainerForLesson } from '@/shared/lib/foundational-knowledge';
+import { MarkdownRenderer } from '@/shared/ui';
 import { CheckCircle2, ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface LessonViewerProps {
@@ -169,11 +170,7 @@ export const LessonViewer = ({
         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
           Подробный разбор
         </h2>
-        <div className="prose prose-invert prose-zinc max-w-none prose-headings:text-white prose-headings:font-semibold prose-h2:text-lg prose-h2:mt-8 prose-h2:mb-3 prose-p:text-zinc-300 prose-p:leading-relaxed prose-li:text-zinc-300 prose-strong:text-white prose-code:text-brand-300 prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
-          <div className="whitespace-pre-line leading-[1.75] text-base sm:text-[17px] text-zinc-200">
-            {lesson.longreadMarkdown}
-          </div>
-        </div>
+        <MarkdownRenderer content={lesson.longreadMarkdown} />
       </section>
 
       {/* Interview Defense */}

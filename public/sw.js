@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mydataset-v2';
+const CACHE_NAME = 'mydataset-v4';
 
 const PRECACHE_ROUTES = [
   '/',

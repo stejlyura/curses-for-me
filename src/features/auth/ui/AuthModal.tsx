@@ -25,16 +25,20 @@ export const AuthModal = (): React.JSX.Element | null => {
 
   if (!isAuthModalOpen) return null;
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
+    const formData = new FormData(e.currentTarget);
+    const effectiveUsername = username || String(formData.get('username') ?? '');
+    const effectivePassword = password || String(formData.get('password') ?? '');
+
+    if (!effectiveUsername.trim() || !effectivePassword.trim()) {
       setError('Введите логин и пароль.');
       return;
     }
 
     setError(null);
     setIsSubmitting(true);
-    const result = await login(username, password);
+    const result = await login(effectiveUsername, effectivePassword);
     setIsSubmitting(false);
 
     if (!result.ok) {

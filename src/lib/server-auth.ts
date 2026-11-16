@@ -29,25 +29,44 @@ const getSessionSecret = (): string => {
     .digest('hex');
 };
 
+const sanitizeAuthText = (value: string): string =>
+  value.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\u00A0/g, ' ');
+
+const normalizeEnvSecret = (raw: string | undefined): string => {
+  if (!raw) return '';
+  let val = sanitizeAuthText(raw).trim();
+  if (
+    val.length >= 2 &&
+    ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'")))
+  ) {
+    val = val.slice(1, -1).trim();
+  }
+  return val;
+};
+
 export const getExpectedUsername = (): string => {
-  const custom = process.env.APP_LOGIN_USER?.trim();
-  return custom && custom.length > 0 ? custom : DEFAULT_USERNAME;
+  const custom = normalizeEnvSecret(process.env.APP_LOGIN_USER);
+  return custom.length > 0 ? custom : DEFAULT_USERNAME;
 };
 
 export const authenticateCredentials = (username: string, password: string): boolean => {
   const expectedUser = getExpectedUsername();
-  const normalizedUser = username.trim().toLowerCase();
-  const normalizedExpectedUser = expectedUser.trim().toLowerCase();
-  const customPass = process.env.APP_LOGIN_PASS;
+  const normalizedUser = sanitizeAuthText(username).trim().toLowerCase();
+  const normalizedExpectedUser = sanitizeAuthText(expectedUser).trim().toLowerCase();
+  const cleanPass = sanitizeAuthText(password);
+  const trimmedPass = cleanPass.trim();
+  const customPass = normalizeEnvSecret(process.env.APP_LOGIN_PASS);
 
-  if (customPass && customPass.length > 0) {
-    return verifyCredentials(normalizedUser, password, normalizedExpectedUser, customPass);
+  if (customPass.length > 0) {
+    return (
+      verifyCredentials(normalizedUser, cleanPass, normalizedExpectedUser, customPass) ||
+      verifyCredentials(normalizedUser, trimmedPass, normalizedExpectedUser, customPass)
+    );
   }
 
-  const trimmedPass = password.trim();
   return (
     timingSafeStringEqual(normalizedUser, normalizedExpectedUser) &&
-    (verifyPasswordDigest(password, DEFAULT_PASSWORD_SALT, DEFAULT_PASSWORD_DIGEST) ||
+    (verifyPasswordDigest(cleanPass, DEFAULT_PASSWORD_SALT, DEFAULT_PASSWORD_DIGEST) ||
       verifyPasswordDigest(trimmedPass, DEFAULT_PASSWORD_SALT, DEFAULT_PASSWORD_DIGEST))
   );
 };

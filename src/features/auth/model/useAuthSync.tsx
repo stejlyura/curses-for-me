@@ -283,17 +283,44 @@ export const AuthSyncProvider = ({
           body: JSON.stringify({ username: inputUser.trim(), password: inputPass }),
         });
 
-        const payload = (await res.json()) as {
+        const rawText = await res.text();
+        type LoginPayload = {
           authenticated?: boolean;
           username?: string;
           token?: string;
           error?: string;
         };
+        const payload = ((): LoginPayload | null => {
+          if (!rawText) return null;
+          try {
+            const parsed: unknown = JSON.parse(rawText);
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+              return parsed as LoginPayload;
+            }
+            return null;
+          } catch {
+            return null;
+          }
+        })();
+
+        if (!payload) {
+          return {
+            ok: false,
+            error: `Сервер авторизации вернул некорректный ответ (HTTP ${res.status}). Обновите страницу или проверьте деплой.`,
+          };
+        }
+
+        if (res.status === 401) {
+          return {
+            ok: false,
+            error: payload.error || 'Неверный логин или пароль.',
+          };
+        }
 
         if (!res.ok || !payload.authenticated) {
           return {
             ok: false,
-            error: payload.error || 'Неверный логин или пароль.',
+            error: payload.error || `Ошибка входа (HTTP ${res.status}).`,
           };
         }
 
